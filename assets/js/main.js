@@ -70,6 +70,48 @@
     }, { passive: true });
   };
 
+  /* --- Пятно фона под курсором -------------------------------------------
+     Пишем позицию в CSS-переменные, а двигает пятно трансформ: браузеру
+     остаётся только сдвинуть готовый слой. Значение догоняет курсор, а не
+     прыгает за ним, иначе пятно дёргается на каждом событии.
+
+     Мыши нет или человек просил меньше движения — не вмешиваемся: пятно
+     продолжает плыть само по себе, этим занимается CSS. */
+  var spot = function () {
+    var el = document.querySelector(".bg__spot");
+    if (!el) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    var x = window.innerWidth / 2;
+    var y = window.innerHeight * 0.34;
+    var tx = x, ty = y, running = false;
+
+    var put = function () {
+      el.style.setProperty("--sx", x.toFixed(1) + "px");
+      el.style.setProperty("--sy", y.toFixed(1) + "px");
+    };
+
+    var frame = function () {
+      x += (tx - x) * 0.07;
+      y += (ty - y) * 0.07;
+      put();
+      if (Math.abs(tx - x) < 0.5 && Math.abs(ty - y) < 0.5) { running = false; return; }
+      requestAnimationFrame(frame);
+    };
+
+    // Класс выключает в CSS самостоятельное блуждание пятна.
+    document.documentElement.classList.add("has-pointer-spot");
+    put();
+
+    window.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;     // тянуть пятно за пальцем незачем
+      tx = e.clientX;
+      ty = e.clientY;
+      if (!running) { running = true; requestAnimationFrame(frame); }
+    }, { passive: true });
+  };
+
   /* --- Появление секций --------------------------------------------------
      Наблюдатель стоит на месте заранее: когда возьмёмся за анимацию,
      останется добавить стили к .reveal / .is-visible, а не править разметку.
@@ -111,7 +153,7 @@
   /* --- Старт -------------------------------------------------------------
      Каждый блок отдельно: если один споткнётся, остальные всё равно
      отработают, а страница не останется наполовину собранной. */
-  [fill, menu, header, reveal].forEach(function (step) {
+  [fill, menu, header, spot, reveal].forEach(function (step) {
     try { step(); } catch (e) { console.error(e); }
   });
 })();

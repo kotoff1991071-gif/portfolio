@@ -59,45 +59,68 @@ body{
   overflow-x:hidden;                 /* свечения выходят за край — страница не должна ездить вбок */
   position:relative;
 }
-/* --- Фон: три цветных пятна, которые плывут и перетекают по форме.
-       Разметка — <div class="bg"> с тремя <span> первым делом в body.
-       Слои в разметке, а не в скрипте: фон должен быть на месте, даже
-       если JS не отработал. Ноль картинок, ноль запросов.
-       Движение — в блоке «Движение» в конце файла. ------------------------ */
+/* --- Фон: сетка, растворяющаяся к краям, и тёплое пятно поверх неё.
+       Разметка — <div class="bg"> с тремя <span> первым делом в body,
+       классы, а не порядок: так понятнее, что за что отвечает.
+
+       Пятно ходит за курсором (позицию пишет main.js в --sx/--sy).
+       Без JS и на сенсорных экранах оно не пропадает, а плывёт само —
+       см. блок «Движение» в конце файла. ---------------------------------- */
 .bg{
   position:fixed;inset:0;z-index:-1;pointer-events:none;
-  overflow:hidden;              /* пятна выходят за край экрана — обрезаем здесь */
+  overflow:hidden;
   contain:layout paint;         /* фон не заставляет пересчитывать страницу */
 }
-.bg span{
-  position:absolute;display:block;
-  filter:blur(80px);
-  mix-blend-mode:screen;        /* на стыке пятен цвет складывается, а не перекрывается */
+.bg span{position:absolute;display:block}
+
+/* Сетка. Маска обязательна: без неё это разлинованная тетрадь, а не фон. */
+.bg__grid{
+  inset:-1px;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 62% at 50% 38%,#000 18%,transparent 76%);
+          mask-image:radial-gradient(ellipse 80% 62% at 50% 38%,#000 18%,transparent 76%);
 }
-.bg span:nth-child(1){
-  left:-10vw;top:-15vh;width:60vw;height:55vw;max-width:780px;max-height:700px;
-  background:radial-gradient(circle at 40% 40%,rgba(168,38,214,.55),rgba(168,38,214,0) 70%);
-  border-radius:58% 42% 47% 53%/47% 53% 47% 53%;
+
+/* Пятно под курсором. Это div, который двигают трансформом, а не градиент
+   с бегающей background-position: трансформ не заставляет браузер
+   перерисовывать градиент на каждом кадре. */
+.bg__spot{
+  --size:min(64vw,760px);
+  left:0;top:0;width:var(--size);height:var(--size);
+  margin-left:calc(var(--size) / -2);
+  margin-top:calc(var(--size) / -2);
+  transform:translate3d(var(--sx,50vw),var(--sy,34vh),0);
+  background:radial-gradient(circle,
+    rgba(255,77,141,.26),rgba(255,140,50,.10) 42%,rgba(255,140,50,0) 68%);
 }
-.bg span:nth-child(2){
-  right:-14vw;top:8vh;width:55vw;height:52vw;max-width:720px;max-height:680px;
-  background:radial-gradient(circle at 60% 40%,rgba(255,110,60,.42),rgba(255,110,60,0) 70%);
-  border-radius:44% 56% 62% 38%/54% 43% 57% 46%;
+
+/* Дежурное свечение снизу слева: без него низ страницы проваливается
+   в плоский чёрный, когда курсор наверху. */
+.bg__glow{
+  left:-20vw;bottom:-30vh;width:70vw;height:70vw;max-width:900px;max-height:900px;
+  border-radius:50%;filter:blur(90px);
+  background:radial-gradient(circle,rgba(150,40,190,.34),rgba(150,40,190,0) 68%);
 }
-.bg span:nth-child(3){
-  left:20vw;bottom:-28vh;width:62vw;height:56vw;max-width:800px;max-height:720px;
-  background:radial-gradient(circle at 45% 55%,rgba(255,60,135,.40),rgba(255,60,135,0) 70%);
-  border-radius:52% 48% 38% 62%/44% 58% 42% 56%;
-}
-/* На телефоне размеры в vw дают крошечные пятна, и экран уходит в чёрный.
-   Здесь они растянуты по высоте, а радиус размытия меньше: на узком экране
-   80px размазывают цвет в ничто. */
+
+/* Телефон. Курсора нет, и сетка на маленьком экране почти не читается —
+   поэтому вся работа ложится на цвет: пятна крупнее и плотнее, клетка
+   мельче, иначе первый экран выглядит просто чёрным. */
 @media (max-width:720px){
-  .bg span{filter:blur(60px)}
-  .bg span:nth-child(1){left:-32vw;top:-8vh;width:110vw;height:62vh;max-width:none;max-height:none}
-  .bg span:nth-child(2){right:-38vw;top:14vh;width:105vw;height:58vh;max-width:none;max-height:none}
-  .bg span:nth-child(3){left:-22vw;bottom:-6vh;width:115vw;height:60vh;max-width:none;max-height:none}
+  .bg__grid{background-size:44px 44px}
+  .bg__spot{
+    --size:min(150vw,640px);
+    background:radial-gradient(circle,
+      rgba(255,77,141,.38),rgba(255,140,50,.16) 42%,rgba(255,140,50,0) 70%);
+  }
+  .bg__glow{
+    left:-32vw;width:125vw;height:64vh;max-width:none;max-height:none;filter:blur(60px);
+    background:radial-gradient(circle,rgba(150,40,190,.46),rgba(150,40,190,0) 68%);
+  }
 }
+
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.04;margin:0}
@@ -340,23 +363,18 @@ button{font:inherit;color:inherit}
    плавность на телефоне.
    ========================================================================== */
 @media (prefers-reduced-motion:no-preference){
-  /* Разная длительность и без общего делителя — рисунок не зацикливается
-     заметно для глаза. Пятна одновременно плывут и перетекают по форме. */
-  .bg span:nth-child(1){animation:blob-1 34s ease-in-out infinite alternate}
-  .bg span:nth-child(2){animation:blob-2 41s ease-in-out infinite alternate}
-  .bg span:nth-child(3){animation:blob-3 47s ease-in-out infinite alternate}
+  .bg__glow{animation:glow-drift 30s ease-in-out infinite alternate}
+  @keyframes glow-drift{to{transform:translate3d(7vw,-6vh,0) scale(1.14)}}
 
-  @keyframes blob-1{
-    50%{border-radius:42% 58% 63% 37%/56% 44% 56% 44%}
-    to{transform:translate3d(8vw,6vh,0) scale(1.14);border-radius:60% 40% 44% 56%/40% 60% 40% 60%}
-  }
-  @keyframes blob-2{
-    50%{border-radius:60% 40% 38% 62%/42% 60% 40% 58%}
-    to{transform:translate3d(-9vw,9vh,0) scale(1.1);border-radius:38% 62% 58% 42%/62% 38% 62% 38%}
-  }
-  @keyframes blob-3{
-    50%{border-radius:40% 60% 56% 44%/58% 42% 58% 42%}
-    to{transform:translate3d(6vw,-8vh,0) scale(1.16);border-radius:62% 38% 44% 56%/38% 62% 38% 62%}
+  /* Там, где курсора нет — телефон, планшет, выключенный JS — пятно
+     блуждает само. Как только main.js начнёт писать --sx/--sy,
+     он заодно снимет этот режим классом на <html>. */
+  html:not(.has-pointer-spot) .bg__spot{animation:spot-wander 44s ease-in-out infinite alternate}
+  @keyframes spot-wander{
+    0%  {transform:translate3d(22vw,26vh,0)}
+    35% {transform:translate3d(78vw,18vh,0)}
+    70% {transform:translate3d(40vw,72vh,0)}
+    100%{transform:translate3d(84vw,58vh,0)}
   }
 
   .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
