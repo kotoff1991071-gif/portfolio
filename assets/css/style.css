@@ -81,16 +81,38 @@ body{
   right:-25vw;top:-10vh;width:65vw;height:65vw;max-width:820px;max-height:820px;
   background:radial-gradient(circle,rgba(255,140,50,.26),rgba(255,140,50,0) 68%);
 }
+.bg__glow--3{display:none}      /* нужно только на телефоне, см. ниже */
 
-/* На телефоне размеры в vw дают крошечные пятна, и экран уходит в чёрный:
-   растягиваем по высоте, радиус размытия меньше — на узком экране 90px
-   размазывают цвет в ничто. */
+/* --- Телефон: вместо частиц — «полотно» --------------------------------
+   Частицы на маленьком экране почти не видны, а цикл рисования при этом
+   крутится и ест батарею. Поэтому до 720px canvas выключается совсем
+   (main.js это видит и даже не запускается), а те же три пятна становятся
+   крупными цветными кляксами, которые плывут и перетекают по форме.
+   Радиус размытия меньше: на узком экране 90px размазывают цвет в ничто. */
 @media (max-width:720px){
-  .bg__glow{filter:blur(60px)}
-  .bg__glow--1{left:-32vw;width:120vw;height:62vh;max-width:none;max-height:none;
-    background:radial-gradient(circle,rgba(150,40,190,.46),rgba(150,40,190,0) 68%)}
-  .bg__glow--2{right:-36vw;top:-4vh;width:115vw;height:56vh;max-width:none;max-height:none;
-    background:radial-gradient(circle,rgba(255,120,60,.30),rgba(255,120,60,0) 68%)}
+  .bg__canvas{display:none}
+  .bg__glow--3{display:block}
+
+  .bg__glow{
+    filter:blur(60px);
+    mix-blend-mode:screen;      /* на стыке пятен цвет складывается, а не перекрывается */
+    max-width:none;max-height:none;
+  }
+  .bg__glow--1{
+    left:-32vw;top:-8vh;bottom:auto;width:110vw;height:62vh;
+    background:radial-gradient(circle at 40% 40%,rgba(168,38,214,.55),rgba(168,38,214,0) 70%);
+    border-radius:58% 42% 47% 53%/47% 53% 47% 53%;
+  }
+  .bg__glow--2{
+    right:-38vw;top:14vh;width:105vw;height:58vh;
+    background:radial-gradient(circle at 60% 40%,rgba(255,110,60,.42),rgba(255,110,60,0) 70%);
+    border-radius:44% 56% 62% 38%/54% 43% 57% 46%;
+  }
+  .bg__glow--3{
+    left:-22vw;bottom:-6vh;width:115vw;height:60vh;
+    background:radial-gradient(circle at 45% 55%,rgba(255,60,135,.40),rgba(255,60,135,0) 70%);
+    border-radius:52% 48% 38% 62%/44% 58% 42% 56%;
+  }
 }
 
 img,svg{display:block;max-width:100%}
@@ -342,6 +364,26 @@ button{font:inherit;color:inherit}
   .bg__glow--2{animation:glow-2 37s ease-in-out infinite alternate}
   @keyframes glow-1{to{transform:translate3d(7vw,-6vh,0) scale(1.14)}}
   @keyframes glow-2{to{transform:translate3d(-6vw,7vh,0) scale(1.1)}}
+
+  /* Телефон: пятна не просто плывут, а перетекают по форме. */
+  @media (max-width:720px){
+    .bg__glow--1{animation:blob-1 34s ease-in-out infinite alternate}
+    .bg__glow--2{animation:blob-2 41s ease-in-out infinite alternate}
+    .bg__glow--3{animation:blob-3 47s ease-in-out infinite alternate}
+
+    @keyframes blob-1{
+      50%{border-radius:42% 58% 63% 37%/56% 44% 56% 44%}
+      to{transform:translate3d(8vw,6vh,0) scale(1.14);border-radius:60% 40% 44% 56%/40% 60% 40% 60%}
+    }
+    @keyframes blob-2{
+      50%{border-radius:60% 40% 38% 62%/42% 60% 40% 58%}
+      to{transform:translate3d(-9vw,9vh,0) scale(1.1);border-radius:38% 62% 58% 42%/62% 38% 62% 38%}
+    }
+    @keyframes blob-3{
+      50%{border-radius:40% 60% 56% 44%/58% 42% 58% 42%}
+      to{transform:translate3d(6vw,-8vh,0) scale(1.16);border-radius:62% 38% 44% 56%/38% 62% 38% 62%}
+    }
+  }
 
   .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
   .js .reveal.is-visible{opacity:1;transform:none}

@@ -150,8 +150,15 @@
       raf = requestAnimationFrame(draw);
     };
 
+    // Решает CSS: на телефоне canvas скрыт, там вместо частиц «полотно».
+    // Спрашиваем у стилей, а не сверяем ширину числом, — иначе порог
+    // пришлось бы держать в двух местах и однажды он бы разъехался.
+    var shown = function () {
+      return window.getComputedStyle(canvas).display !== "none";
+    };
+
     var start = function () {
-      if (raf || document.hidden) return;
+      if (raf || document.hidden || !shown()) return;
       raf = requestAnimationFrame(draw);
     };
     var stop = function () {
@@ -160,34 +167,39 @@
       raf = 0;
     };
 
-    size();
-    seed();
-
-    if (reduce) {
-      draw(0);                              // один кадр: картинка есть, движения нет
-      stop();
-    } else {
-      start();
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) stop(); else start();
-      });
-      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-        window.addEventListener("pointermove", function (e) {
-          if (e.pointerType === "touch") return;
-          mx = e.clientX;
-          my = e.clientY;
-        }, { passive: true });
+    // Пересобрать под текущий размер окна и решить, рисовать ли вообще.
+    var apply = function () {
+      if (!shown()) { stop(); return; }     // «полотно» на телефоне: частицы не нужны
+      size();
+      seed();
+      if (reduce) {
+        draw(0);                            // один кадр: картинка есть, движения нет
+        stop();
+        return;
       }
+      start();
+    };
+
+    apply();
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else if (!reduce) start();
+    });
+
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      window.addEventListener("pointermove", function (e) {
+        if (e.pointerType === "touch") return;
+        mx = e.clientX;
+        my = e.clientY;
+      }, { passive: true });
     }
 
+    // Поворот телефона или изменение окна могут перевести страницу через
+    // порог: частицы тогда включаются или выключаются сами.
     var timer = 0;
     window.addEventListener("resize", function () {
       clearTimeout(timer);
-      timer = setTimeout(function () {
-        size();
-        seed();
-        if (reduce) draw(0);
-      }, 150);
+      timer = setTimeout(apply, 150);
     }, { passive: true });
   };
 
