@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru" data-bg="aurora">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Фоны — примерочная</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0A0C">
+
+<!-- Временная страница: выбираем фон, потом вживляем один и удаляем папку lab. -->
+<link rel="preload" href="../assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/bg.css">
+<script>document.documentElement.classList.add("js")</script>
+
+<style>
+  /* Только для этой страницы: переключатель вариантов. */
+  .picker{
+    position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:80;
+    display:flex;gap:6px;padding:6px;
+    border:1px solid var(--line-2);border-radius:var(--r-pill);
+    background:rgba(10,10,12,.82);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    max-width:calc(100vw - 32px);overflow-x:auto;
+  }
+  .picker button{
+    flex:none;padding:9px 16px;border:0;border-radius:var(--r-pill);
+    background:transparent;color:var(--text-2);
+    font:700 13px/1 var(--body);white-space:nowrap;cursor:pointer;
+    transition:background-color .2s var(--ease),color .2s var(--ease);
+  }
+  .picker button:hover{color:var(--text)}
+  .picker button[aria-pressed="true"]{background:#fff;color:#0A0A0C}
+  .note{
+    position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:80;
+    padding:7px 14px;border:1px solid var(--line);border-radius:var(--r-pill);
+    background:rgba(10,10,12,.7);backdrop-filter:blur(10px);
+    font-size:12px;color:var(--text-3);white-space:nowrap;
+  }
+  .hero{min-height:100svh;display:flex;align-items:center;padding-block:80px}
+</style>
+</head>
+
+<body>
+
+<p class="note">Примерочная фонов — на сайте её не будет</p>
+
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <h1>
+        Сайты и приложения
+        <span class="l2 grad">для малого бизнеса.</span>
+      </h1>
+      <p class="hero__lead">Делаю сайты и мобильные приложения для малого бизнеса. От лендинга до приложения в RuStore.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#">Обсудить проект
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+        </a>
+        <a class="btn btn--ghost" href="#">Смотреть работы</a>
+      </div>
+      <ul class="stats">
+        <li class="stat"><b>3</b><span>проекта можно открыть прямо сейчас</span></li>
+        <li class="stat"><b>2</b><span>собраны в приложение под Android</span></li>
+        <li class="stat"><b>0</b><span>конструкторов: весь код свой</span></li>
+      </ul>
+    </div>
+
+    <div class="phone__box">
+      <span class="phone">
+        <img src="../assets/img/dennochka-hero.svg" width="375" height="812" alt="">
+      </span>
+      <p class="phone__cap">«Деньночка» — открывается прямо в браузере</p>
+    </div>
+  </div>
+</section>
+
+<nav class="picker" aria-label="Выбор фона">
+  <button type="button" data-set="aurora"  aria-pressed="true">1 · Сияние</button>
+  <button type="button" data-set="grid"    aria-pressed="false">2 · Сетка</button>
+  <button type="button" data-set="stars"   aria-pressed="false">3 · Частицы</button>
+  <button type="button" data-set="mesh"    aria-pressed="false">4 · Полотно</button>
+  <button type="button" data-set="none"    aria-pressed="false">Без фона</button>
+</nav>
+
+<script src="../assets/js/bg.js" defer></script>
+<script defer>
+  document.addEventListener("DOMContentLoaded", function () {
+    var picker = document.querySelector(".picker");
+    picker.addEventListener("click", function (e) {
+      var btn = e.target.closest("button[data-set]");
+      if (!btn) return;
+      document.documentElement.dataset.bg = btn.dataset.set;
+      picker.querySelectorAll("button").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      // Фон с частицами живёт на canvas — сообщаем ему о смене.
+      window.dispatchEvent(new Event("bg:change"));
+    });
+  });
+</script>
+</body>
+</html>

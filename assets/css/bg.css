@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Фоны — четыре варианта на выбор.
+
+   Слои создаёт bg.js, разметку трогать не нужно. Вариант переключается
+   атрибутом data-bg на <html>: aurora | grid | stars | mesh | none.
+
+   Правила общие для всех вариантов:
+   — всё лежит под контентом и не ловит клики;
+   — анимируются только transform и opacity;
+   — при prefers-reduced-motion движение выключается, картинка остаётся.
+   ========================================================================== */
+
+/* Свечения из style.css выключаем: здесь ими управляет .bg */
+body::before,body::after{display:none}
+
+.bg{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  overflow:hidden;
+  contain:strict;              /* фон не пересчитывает лэйаут страницы */
+}
+.bg>*{position:absolute;opacity:0;transition:opacity .45s var(--ease)}
+
+/* --- Пятна: общая заготовка для нескольких вариантов ------------------- */
+.bg__glow{border-radius:50%;filter:blur(90px)}
+.bg__glow--1{
+  left:-20vw;bottom:-30vh;width:70vw;height:70vw;max-width:900px;max-height:900px;
+  background:radial-gradient(circle,rgba(150,40,190,.42),rgba(150,40,190,0) 68%);
+}
+.bg__glow--2{
+  right:-25vw;top:-10vh;width:65vw;height:65vw;max-width:820px;max-height:820px;
+  background:radial-gradient(circle,rgba(255,140,50,.26),rgba(255,140,50,0) 68%);
+}
+.bg__glow--3{
+  left:35%;top:30%;width:50vw;height:50vw;max-width:620px;max-height:620px;
+  background:radial-gradient(circle,rgba(255,77,141,.20),rgba(255,77,141,0) 68%);
+}
+
+/* --- Сетка и пятно под курсором ---------------------------------------- */
+.bg__grid{
+  inset:-1px;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:64px 64px;
+  /* растворяем сетку к краям, иначе она выглядит как разлинованная тетрадь */
+  -webkit-mask-image:radial-gradient(ellipse 80% 62% at 50% 38%,#000 18%,transparent 76%);
+          mask-image:radial-gradient(ellipse 80% 62% at 50% 38%,#000 18%,transparent 76%);
+}
+.bg__spot{
+  inset:0;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,32%),
+             rgba(255,77,141,.20),rgba(255,140,50,.07) 40%,transparent 68%);
+}
+
+/* --- Частицы ------------------------------------------------------------ */
+.bg__canvas{inset:0;width:100%;height:100%}
+
+/* --- Полотно: крупные цветные пятна, которые медленно меняют форму ------ */
+.bg__blob{filter:blur(80px);mix-blend-mode:screen}
+.bg__blob--1{
+  left:-10vw;top:-15vh;width:60vw;height:55vw;max-width:780px;max-height:700px;
+  background:radial-gradient(circle at 40% 40%,rgba(168,38,214,.55),rgba(168,38,214,0) 70%);
+  border-radius:58% 42% 47% 53%/47% 53% 47% 53%;
+}
+.bg__blob--2{
+  right:-14vw;top:8vh;width:55vw;height:52vw;max-width:720px;max-height:680px;
+  background:radial-gradient(circle at 60% 40%,rgba(255,110,60,.42),rgba(255,110,60,0) 70%);
+  border-radius:44% 56% 62% 38%/54% 43% 57% 46%;
+}
+.bg__blob--3{
+  left:20vw;bottom:-28vh;width:62vw;height:56vw;max-width:800px;max-height:720px;
+  background:radial-gradient(circle at 45% 55%,rgba(255,60,135,.40),rgba(255,60,135,0) 70%);
+  border-radius:52% 48% 38% 62%/44% 58% 42% 56%;
+}
+
+/* ==========================================================================
+   Какой вариант что показывает
+   ========================================================================== */
+[data-bg="aurora"] .bg__glow{opacity:1}
+
+[data-bg="grid"] .bg__grid,
+[data-bg="grid"] .bg__spot{opacity:1}
+[data-bg="grid"] .bg__glow--1{opacity:.55}
+
+[data-bg="stars"] .bg__canvas{opacity:1}
+[data-bg="stars"] .bg__glow--1{opacity:.8}
+[data-bg="stars"] .bg__glow--2{opacity:.55}
+
+[data-bg="mesh"] .bg__blob{opacity:1}
+
+/* ==========================================================================
+   Движение
+   ========================================================================== */
+@media (prefers-reduced-motion:no-preference){
+  [data-bg="aurora"] .bg__glow--1{animation:bg-drift-a 26s ease-in-out infinite alternate}
+  [data-bg="aurora"] .bg__glow--2{animation:bg-drift-b 32s ease-in-out infinite alternate}
+  [data-bg="aurora"] .bg__glow--3{animation:bg-drift-c 38s ease-in-out infinite alternate}
+
+  [data-bg="stars"] .bg__glow--1{animation:bg-drift-a 26s ease-in-out infinite alternate}
+  [data-bg="stars"] .bg__glow--2{animation:bg-drift-b 32s ease-in-out infinite alternate}
+
+  @keyframes bg-drift-a{to{transform:translate3d(6vw,-5vh,0) scale(1.12)}}
+  @keyframes bg-drift-b{to{transform:translate3d(-5vw,6vh,0) scale(1.08)}}
+  @keyframes bg-drift-c{to{transform:translate3d(-7vw,-4vh,0) scale(1.18)}}
+
+  /* Полотно: пятна одновременно плывут и перетекают по форме */
+  [data-bg="mesh"] .bg__blob--1{animation:bg-morph-1 34s ease-in-out infinite alternate}
+  [data-bg="mesh"] .bg__blob--2{animation:bg-morph-2 41s ease-in-out infinite alternate}
+  [data-bg="mesh"] .bg__blob--3{animation:bg-morph-3 47s ease-in-out infinite alternate}
+
+  @keyframes bg-morph-1{
+    50%{border-radius:42% 58% 63% 37%/56% 44% 56% 44%}
+    to{transform:translate3d(8vw,6vh,0) scale(1.14);border-radius:60% 40% 44% 56%/40% 60% 40% 60%}
+  }
+  @keyframes bg-morph-2{
+    50%{border-radius:60% 40% 38% 62%/42% 60% 40% 58%}
+    to{transform:translate3d(-9vw,9vh,0) scale(1.1);border-radius:38% 62% 58% 42%/62% 38% 62% 38%}
+  }
+  @keyframes bg-morph-3{
+    50%{border-radius:40% 60% 56% 44%/58% 42% 58% 42%}
+    to{transform:translate3d(6vw,-8vh,0) scale(1.16);border-radius:62% 38% 44% 56%/38% 62% 38% 62%}
+  }
+}
