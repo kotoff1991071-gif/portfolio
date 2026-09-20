@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Имя Фамилия — сайты и мобильные приложения для малого бизнеса</title>
+<meta name="description" content="Делаю сайты и мобильные приложения для малого бизнеса: лендинги под заявки, многостраничники, веб-приложения для учёта, приложения под Android с публикацией в RuStore.">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Имя Фамилия — сайты и мобильные приложения">
+<meta property="og:description" content="Лендинги, многостраничники, веб-приложения под задачу бизнеса и приложения под Android. Три работы, которые можно открыть и потыкать.">
+<meta name="theme-color" content="#0A0A0C">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<!-- Ставим метку до отрисовки: без неё секции с .reveal остаются видимыми,
+     и страница читается, даже если скрипт не загрузился. -->
+<script>document.documentElement.classList.add("js")</script>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <a class="mark" href="#top"><span data-c="person.wordmark">ИФ</span></a>
+
+    <nav class="nav" aria-label="Разделы">
+      <a href="#works">Работы</a>
+      <a href="#services">Услуги</a>
+      <a href="#about">О себе</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+
+    <a class="btn btn--primary btn--sm" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+      Обсудить проект
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+    </a>
+
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Меню">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-label="Разделы">
+  <a href="#works">Работы</a>
+  <a href="#services">Услуги</a>
+  <a href="#about">О себе</a>
+  <a href="#contact">Контакты</a>
+  <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">Обсудить проект</a>
+</nav>
+
+<main id="top">
+
+  <!-- ====================== Первый экран ====================== -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <h1>
+          Сайты и приложения
+          <span class="l2 grad">для малого бизнеса.</span>
+        </h1>
+
+        <p class="hero__lead" data-c="person.tagline">Делаю сайты и мобильные приложения для малого бизнеса. От лендинга до приложения в RuStore.</p>
+
+        <div class="hero__cta">
+          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+            Обсудить проект
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+          </a>
+          <a class="btn btn--ghost" href="#works">Смотреть работы</a>
+        </div>
+
+        <ul class="stats">
+          <li class="stat"><b data-c="stats.0.value">3</b><span data-c="stats.0.label">проекта можно открыть прямо сейчас</span></li>
+          <li class="stat"><b data-c="stats.1.value">2</b><span data-c="stats.1.label">собраны в приложение под Android</span></li>
+          <li class="stat"><b data-c="stats.2.value">0</b><span data-c="stats.2.label">конструкторов: весь код свой</span></li>
+        </ul>
+      </div>
+
+      <div class="phone__box">
+        <a class="phone" href="demo/dennochka/index.html" target="_blank" rel="noopener" aria-label="Открыть демо приложения «Деньночка»">
+          <img src="assets/img/dennochka-hero.svg" width="375" height="812" alt="Экран приложения «Деньночка»: список сказок на ночь">
+          <span class="phone__play">
+            Живое демо
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+          </span>
+        </a>
+        <p class="phone__cap">«Деньночка» — открывается прямо в браузере</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Работы ====================== -->
+  <section class="sec" id="works">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <p class="eyebrow">Работы</p>
+        <h2>Не скриншоты,<br>а живые ссылки.</h2>
+        <p>Два приложения можно открыть с телефона и потыкать — они работают в браузере, ставить ничего не нужно.</p>
+      </div>
+
+      <div class="works">
+
+        <!-- 01 -->
+        <article class="work reveal">
+          <div class="work__top">
+            <span class="work__no">01</span>
+            <h3>Деньночка</h3>
+            <span class="work__kind">Android · 2026</span>
+          </div>
+
+          <dl class="work__body">
+            <div>
+              <dt>Задача</dt>
+              <dd>Родителям нужно занять ребёнка днём и уложить вечером. Готовые приложения либо превращаются в мультик с рекламой, либо это просто аудиокнига, одинаковая для всех детей.</dd>
+            </div>
+            <div>
+              <dt>Что сделал</dt>
+              <dd>Приложение с двумя режимами: днём — <b>азбука в стихах на 33 буквы</b>, ночью — <b>10 сказок, где герой сам ребёнок</b>: подставляются имя, пол и любимая игрушка. Озвучка через Yandex SpeechKit своей функцией в облаке, готовый звук кэшируется на телефоне.</dd>
+            </div>
+            <div>
+              <dt>Что получилось</dt>
+              <dd>Работает <b>целиком оффлайн</b> — в машине и в самолёте тоже. Подписка (три сказки бесплатно, дальше 299 ₽ в месяц) заложена заранее и включается одним флагом, когда откроется приём оплаты в RuStore.</dd>
+            </div>
+          </dl>
+
+          <ul class="tags">
+            <li>Android</li><li>WebView</li><li>HTML / CSS / JS</li><li>Yandex SpeechKit</li><li>Cloud Functions</li><li>Оффлайн</li>
+          </ul>
+
+          <div class="work__foot">
+            <a class="btn btn--primary btn--sm" href="demo/dennochka/index.html" target="_blank" rel="noopener">
+              Открыть демо
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+            </a>
+            <span class="work__soon">Лучше смотреть с телефона</span>
+          </div>
+        </article>
+
+        <!-- 02 -->
+        <article class="work reveal">
+          <div class="work__top">
+            <span class="work__no">02</span>
+            <h3>Котобол</h3>
+            <span class="work__kind">PWA + Android · 2026</span>
+          </div>
+
+          <dl class="work__body">
+            <div>
+              <dt>Задача</dt>
+              <dd>Нужна простая игра, в которую ребёнок играет сам или вдвоём с родителем. Без рекламы, без интернета и без похода в магазин приложений.</dd>
+            </div>
+            <div>
+              <dt>Что сделал</dt>
+              <dd>Пляжный волейбол для котиков: один на один с компьютером или вдвоём на одном экране. <b>Вся игра — физика, графика, звук — в одном файле на 52 КБ.</b> Оформлено как PWA: ставится на домашний экран и после первой загрузки работает без сети.</dd>
+            </div>
+            <div>
+              <dt>Что получилось</dt>
+              <dd>Одна кодовая база даёт <b>и ссылку, которую можно просто кинуть в чат, и приложение под Android</b> — тот же файл собран в APK без переписывания.</dd>
+            </div>
+          </dl>
+
+          <ul class="tags">
+            <li>PWA</li><li>Service Worker</li><li>HTML / CSS / JS</li><li>Android</li><li>52 КБ</li>
+          </ul>
+
+          <div class="work__foot">
+            <a class="btn btn--primary btn--sm" href="demo/kotobol/index.html" target="_blank" rel="noopener">
+              Играть
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+            </a>
+            <span class="work__soon">Поверни телефон горизонтально</span>
+          </div>
+        </article>
+
+        <!-- 03 -->
+        <article class="work reveal">
+          <div class="work__top">
+            <span class="work__no">03</span>
+            <h3>Дневник футбольной школы</h3>
+            <span class="work__kind">Веб-приложение</span>
+          </div>
+
+          <dl class="work__body">
+            <div>
+              <dt>Задача</dt>
+              <dd>Тренеры вели учеников, посещаемость и оплаты в тетради и в переписке. Из-за этого регулярно терялось и то, и другое: кто пришёл, у кого закончился абонемент, кто платил в прошлом месяце.</dd>
+            </div>
+            <div>
+              <dt>Что сделал</dt>
+              <dd>Веб-приложение с учениками, группами и расписанием. <b>Посещаемость отмечается в один тап</b> прямо на поле с телефона, оплаты и абонементы считаются сами.</dd>
+            </div>
+            <div>
+              <dt>Что получилось</dt>
+              <dd>Видно, кто сколько занятий отходил и у кого заканчивается абонемент. <b>Вечерняя рутина с тетрадью укладывается в пару минут</b> сразу после тренировки.</dd>
+            </div>
+          </dl>
+
+          <ul class="tags">
+            <li>Веб-приложение</li><li>Учёт клиентов</li><li>Посещаемость</li><li>Оплаты</li><li>Адаптив</li>
+          </ul>
+
+          <div class="work__foot">
+            <span class="work__soon">Внутренний инструмент школы — публичного демо нет</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Услуги ====================== -->
+  <section class="sec" id="services">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <p class="eyebrow">Услуги</p>
+        <h2>Четыре понятных<br><span class="grad">пакета.</span></h2>
+        <p>Цена зависит от объёма, поэтому вилка. Точную сумму и срок называю после короткого разговора — бесплатно и без обязательств.</p>
+      </div>
+
+      <div class="services">
+
+        <article class="srv reveal">
+          <h3>Лендинг под заявки</h3>
+          <p class="srv__who">Когда есть одна услуга или один продукт, и нужны звонки и заявки.</p>
+          <ul class="srv__list">
+            <li>Одна страница с понятной структурой</li>
+            <li>Адаптив: одинаково удобно с телефона и с компьютера</li>
+            <li>Форма заявки с отправкой вам в Телеграм или на почту</li>
+            <li>Подключение Яндекс.Метрики и целей</li>
+          </ul>
+          <p class="srv__price">
+            <b data-c="prices.landing.price">от 25 000 ₽</b>
+            <span data-c="prices.landing.term">3–7 дней</span>
+          </p>
+        </article>
+
+        <article class="srv reveal">
+          <h3>Сайт-визитка или многостраничный</h3>
+          <p class="srv__who">Когда услуг много и их нужно разложить по полкам, а не сваливать в одну страницу.</p>
+          <ul class="srv__list">
+            <li>Каталог услуг или товаров</li>
+            <li>Отзывы, команда, контакты, карта</li>
+            <li>Вы сами меняете тексты и цены</li>
+            <li>Базовая настройка под поиск</li>
+          </ul>
+          <p class="srv__price">
+            <b data-c="prices.site.price">от 45 000 ₽</b>
+            <span data-c="prices.site.term">1–2 недели</span>
+          </p>
+        </article>
+
+        <article class="srv reveal">
+          <h3>Веб-приложение под задачу бизнеса</h3>
+          <p class="srv__who">Когда учёт живёт в тетради, в Excel и в переписке — и что-нибудь обязательно теряется.</p>
+          <ul class="srv__list">
+            <li>Клиенты, записи, посещаемость, оплаты</li>
+            <li>Работает с телефона, ставить ничего не нужно</li>
+            <li>Доступы: у администратора одно, у сотрудника другое</li>
+            <li>Выгрузка данных в таблицу</li>
+          </ul>
+          <p class="srv__price">
+            <b data-c="prices.webapp.price">от 70 000 ₽</b>
+            <span data-c="prices.webapp.term">от 3 недель</span>
+          </p>
+        </article>
+
+        <article class="srv reveal">
+          <h3>Мобильное приложение и публикация в RuStore</h3>
+          <p class="srv__who">Когда клиент должен возвращаться к вам, а не искать сайт заново в поиске.</p>
+          <ul class="srv__list">
+            <li>Приложение под Android</li>
+            <li>Оффлайн-режим: работает без интернета</li>
+            <li>Подписка или разовая покупка</li>
+            <li>Сборка, подписание и выкладка в RuStore</li>
+          </ul>
+          <p class="srv__price">
+            <b data-c="prices.mobile.price">от 120 000 ₽</b>
+            <span data-c="prices.mobile.term">от 4 недель</span>
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== О себе ====================== -->
+  <section class="sec" id="about">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <p class="eyebrow">О себе</p>
+        <h2>Коротко.</h2>
+      </div>
+
+      <div class="about reveal">
+        <div class="about__text">
+          <p>Пишу код сам, от первого экрана до выкладки. Не собираю сайты в конструкторе: <b>то, что я сдаю, можно открыть, посмотреть исходники и поменять без меня.</b></p>
+          <p>Берусь за задачи, где нужно не «красиво», а чтобы работало: заявки доходили, посещаемость считалась, приложение открывалось в метро без интернета.</p>
+          <p>Обсуждение начинаю не с того, сколько будет страниц, а с того, <b>что должно измениться в вашей работе</b> после запуска.</p>
+        </div>
+
+        <ul class="facts">
+          <li><b>Скорость — не украшение</b>Эта страница грузится меньше чем за секунду. Ваш сайт будет таким же.</li>
+          <li><b>Один исполнитель</b>Без менеджеров и пересказов: вы говорите напрямую с тем, кто пишет код.</li>
+          <li><b>Код остаётся у вас</b>Исходники, доступы и домен — ваши. Уйти ко мне на обслуживание вы не обязаны.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Контакты ====================== -->
+  <section class="sec" id="contact">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Расскажите, <span class="grad">что нужно.</span></h2>
+        <p>Напишите пару предложений о задаче. Отвечу, что тут реально сделать, сколько это стоит и сколько займёт. Если задача не моя — скажу сразу.</p>
+        <div class="cta__row">
+          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+            Написать в Телеграм
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+          </a>
+          <span class="tg" data-c="person.tgLabel">@username</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <span><span data-c="person.name">Имя Фамилия</span> · <span data-c="person.city">Работаю удалённо</span></span>
+    <a href="deck.html">Короткая презентация →</a>
+    <span>Сайт сделан вручную: HTML, CSS, JS. Без конструкторов и фреймворков.</span>
+  </div>
+</footer>
+
+<script src="assets/js/content.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

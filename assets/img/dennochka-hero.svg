@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" width="375" height="812" role="img" aria-label="Ночной экран приложения «Деньночка» со списком сказок">
+<title>Деньночка — ночной режим</title>
+<!-- Цвета взяты из body.night самого приложения: demo/dennochka/style.css -->
+<defs>
+  <style>
+    .t{font-family:"Nunito",Roboto,system-ui,sans-serif;fill:#ECE8FF}
+    .eyebrow{font:800 12px "Nunito",system-ui,sans-serif;fill:#A5A3C9;letter-spacing:.9}
+    .h1{font:400 30px "Pangolin","Nunito",system-ui,sans-serif;fill:#ECE8FF}
+    .h2{font:400 23px "Pangolin","Nunito",system-ui,sans-serif;fill:#ECE8FF}
+    .chip{font:800 15px "Nunito",system-ui,sans-serif;fill:#ECE8FF}
+    .note{font:400 13px "Nunito",system-ui,sans-serif;fill:#A5A3C9}
+    .tab{font:700 11px "Nunito",system-ui,sans-serif;fill:#A5A3C9}
+    .tab-on{font:800 11px "Nunito",system-ui,sans-serif;fill:#ECE8FF}
+  </style>
+</defs>
+
+<rect width="375" height="812" fill="#12162E"/>
+
+<!-- звёзды -->
+<g fill="#F5D78E" opacity=".55">
+  <circle cx="312" cy="46" r="1.2"/><circle cx="58" cy="128" r="1"/><circle cx="344" cy="212" r="1.4"/>
+  <circle cx="26" cy="292" r="1"/><circle cx="292" cy="336" r="1.1"/><circle cx="120" cy="590" r="1.3"/>
+  <circle cx="330" cy="612" r="1"/><circle cx="62" cy="668" r="1.2"/><circle cx="268" cy="700" r="1"/>
+  <circle cx="176" cy="742" r="1.1"/><circle cx="20" cy="470" r="1"/><circle cx="352" cy="520" r="1.2"/>
+</g>
+<circle cx="300" cy="120" r="120" fill="#F5D78E" opacity=".05"/>
+
+<!-- шапка -->
+<text class="eyebrow" x="20" y="44">НОЧЬЮ — СКАЗКИ</text>
+<text class="h1" x="20" y="82">Добрый вечер, Маша</text>
+<text class="h2" x="20" y="132">С чем помочь сегодня?</text>
+
+<!-- карточки сказок -->
+<g>
+  <rect x="20" y="158" width="163" height="62" rx="22" fill="#1B2143"/>
+  <text class="chip" x="38" y="195">Боится темноты</text>
+
+  <rect x="192" y="158" width="163" height="62" rx="22" fill="#1B2143"/>
+  <text class="chip" x="210" y="195">Не хочет в садик</text>
+
+  <rect x="20" y="230" width="163" height="62" rx="22" fill="#1B2143"/>
+  <text class="chip" x="38" y="267">Появился малыш</text>
+
+  <rect x="192" y="230" width="163" height="76" rx="22" fill="#1B2143"/>
+  <text class="chip" x="210" y="262">Не хочет чистить</text>
+  <text class="chip" x="210" y="282">зубы</text>
+
+  <rect x="20" y="302" width="163" height="76" rx="22" fill="#1B2143"/>
+  <text class="chip" x="38" y="334">Первый раз к</text>
+  <text class="chip" x="38" y="354">врачу</text>
+
+  <rect x="192" y="316" width="163" height="76" rx="22" fill="#1B2143"/>
+  <text class="chip" x="210" y="348">Приснился</text>
+  <text class="chip" x="210" y="368">страшный сон</text>
+
+  <rect x="20" y="388" width="163" height="62" rx="22" fill="#1B2143"/>
+  <text class="chip" x="38" y="425">Злится и кричит</text>
+
+  <rect x="192" y="402" width="163" height="76" rx="22" fill="#1B2143"/>
+  <text class="chip" x="210" y="434">Не хочет</text>
+  <text class="chip" x="210" y="454">делиться</text>
+
+  <rect x="20" y="460" width="163" height="62" rx="22" fill="#1B2143"/>
+  <text class="chip" x="38" y="497">Переезд</text>
+
+  <rect x="192" y="488" width="163" height="76" rx="22" fill="#1B2143"/>
+  <text class="chip" x="210" y="520">«У меня не</text>
+  <text class="chip" x="210" y="540">получается»</text>
+</g>
+
+<text class="note" x="20" y="594">Новые сказки будут появляться с обновлениями.</text>
+
+<!-- нижние вкладки -->
+<rect x="0" y="736" width="375" height="76" fill="#1B2143"/>
+<g transform="translate(0,748)">
+  <!-- День -->
+  <g transform="translate(46,0)" fill="none" stroke="#A5A3C9" stroke-width="1.8" stroke-linecap="round">
+    <circle cx="0" cy="8" r="4.5"/>
+    <path d="M0 -1v-3M0 17v3M-9 8h-3M9 8h3M-6.4 1.6l-2.1-2.1M6.4 14.4l2.1 2.1M-6.4 14.4l-2.1 2.1M6.4 1.6l2.1-2.1"/>
+  </g>
+  <text class="tab" x="46" y="38" text-anchor="middle">День</text>
+
+  <!-- Ночь (активная) -->
+  <path transform="translate(140,0)" d="M12 8.5A8 8 0 1 1 1.5 -2 6.5 6.5 0 0 0 12 8.5z" fill="none" stroke="#F5D78E" stroke-width="1.8" stroke-linejoin="round"/>
+  <text class="tab-on" x="146" y="38" text-anchor="middle">Ночь</text>
+
+  <!-- Полка -->
+  <g transform="translate(222,-1)" fill="none" stroke="#A5A3C9" stroke-width="1.8">
+    <rect x="0" y="0" width="5" height="16" rx="1"/><rect x="7" y="0" width="5" height="16" rx="1"/>
+    <rect x="15" y="2" width="5" height="15" rx="1" transform="rotate(-12 17 9)"/>
+  </g>
+  <text class="tab" x="235" y="38" text-anchor="middle">Полка</text>
+
+  <!-- Родителям -->
+  <g transform="translate(322,0)" fill="none" stroke="#A5A3C9" stroke-width="1.8" stroke-linecap="round">
+    <circle cx="0" cy="3" r="4"/><path d="M-8 16c1.5-4 4.5-6 8-6s6.5 2 8 6"/>
+  </g>
+  <text class="tab" x="322" y="38" text-anchor="middle">Родителям</text>
+</g>
+</svg>

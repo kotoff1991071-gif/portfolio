@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Users/IRONMI~1/AppData/Local/Temp/claude/C--Web-Portfolio/df95697f-b5f4-4702-bb73-ac68b81069ea/scratchpad/serve.mjs"],
+      "port": 5173
+    }
+  ]
+}
