@@ -108,7 +108,7 @@ body{overflow-x:hidden}
   @page{size:A4 landscape;margin:0}
 
   html,body{background:#0D0D11}
-  body::before,body::after{display:none}
+  .bg{display:none}
   .bar{display:none}
   .deck{display:block;padding:0;gap:0}
 
