@@ -258,6 +258,13 @@ button{font:inherit;color:inherit}
 .sec__head h2{font-size:clamp(28px,4.6vw,50px);margin-top:14px}
 .sec__head p{margin-top:16px;color:var(--text-2);max-width:54ch}
 
+/* «живые» — единственное слово на сайте, которое шевелится само.
+   Буквы разбиты на span, чтобы волна шла по ним со сдвигом; само
+   движение — в блоке «Движение» в конце файла. Ширину слово не меняет,
+   поэтому строка под ним не пляшет. */
+.alive{display:inline-block;white-space:nowrap}
+.alive>span{display:inline-block}
+
 /* --- Работы ------------------------------------------------------------- */
 .works{display:grid;gap:18px}
 .work{
@@ -383,6 +390,23 @@ button{font:inherit;color:inherit}
       50%{border-radius:40% 60% 56% 44%/58% 42% 58% 42%}
       to{transform:translate3d(6vw,-8vh,0) scale(1.16);border-radius:62% 38% 44% 56%/38% 62% 38% 62%}
     }
+  }
+
+  /* Волна по слову «живые»: буква подскакивает и возвращается, соседняя
+     подхватывает с задержкой. Цикл длинный и с паузой в конце — слово
+     оживает на секунду, а не дёргается без остановки. Трогаем только
+     transform: анимировать цвет или размер в заголовке значит гонять
+     перерисовку текста на каждом кадре. */
+  .alive>span{animation:alive 3.4s ease-in-out infinite}
+  .alive>span:nth-child(2){animation-delay:.09s}
+  .alive>span:nth-child(3){animation-delay:.18s}
+  .alive>span:nth-child(4){animation-delay:.27s}
+  .alive>span:nth-child(5){animation-delay:.36s}
+
+  @keyframes alive{
+    0%,42%,100%{transform:translate3d(0,0,0) rotate(0)}
+    16%{transform:translate3d(0,-.10em,0) rotate(-3deg)}
+    29%{transform:translate3d(0,.02em,0) rotate(1.5deg)}
   }
 
   .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
