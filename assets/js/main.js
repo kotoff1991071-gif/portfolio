@@ -70,45 +70,124 @@
     }, { passive: true });
   };
 
-  /* --- Пятно фона под курсором -------------------------------------------
-     Пишем позицию в CSS-переменные, а двигает пятно трансформ: браузеру
-     остаётся только сдвинуть готовый слой. Значение догоняет курсор, а не
-     прыгает за ним, иначе пятно дёргается на каждом событии.
+  /* --- Частицы фона -------------------------------------------------------
+     Точки медленно плывут по экрану и мерцают. Рядом с курсором разгораются
+     и слегка сторонятся его — единственное место, где фон отвечает на
+     действие, поэтому эффект намеренно слабый.
 
-     Мыши нет или человек просил меньше движения — не вмешиваемся: пятно
-     продолжает плыть само по себе, этим занимается CSS. */
-  var spot = function () {
-    var el = document.querySelector(".bg__spot");
-    if (!el) return;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+     Экономия, без которой это была бы просто грелка для батареи:
+     на скрытой вкладке цикл останавливается, плотность пикселей ограничена
+     двойной, а при просьбе уменьшить движение рисуется один кадр и всё.  */
+  var particles = function () {
+    var canvas = document.querySelector(".bg__canvas");
+    if (!canvas) return;
 
-    var x = window.innerWidth / 2;
-    var y = window.innerHeight * 0.34;
-    var tx = x, ty = y, running = false;
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;                       // фон переживёт: свечения в разметке
 
-    var put = function () {
-      el.style.setProperty("--sx", x.toFixed(1) + "px");
-      el.style.setProperty("--sy", y.toFixed(1) + "px");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var COLORS = ["255,255,255", "255,77,141", "255,154,60"];
+    var dots = [], w = 0, h = 0, raf = 0;
+    var mx = -999, my = -999;               // курсор за пределами экрана, пока не двинулся
+    var REACH = 130;                        // радиус, в котором точки реагируют
+
+    var size = function () {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    var frame = function () {
-      x += (tx - x) * 0.07;
-      y += (ty - y) * 0.07;
-      put();
-      if (Math.abs(tx - x) < 0.5 && Math.abs(ty - y) < 0.5) { running = false; return; }
-      requestAnimationFrame(frame);
+    var seed = function () {
+      var count = Math.round(Math.min(90, w / 14));
+      dots = [];
+      for (var i = 0; i < count; i++) {
+        dots.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.4 + 0.5,
+          vx: (Math.random() - 0.5) * 0.14,
+          vy: (Math.random() - 0.5) * 0.14,
+          a: Math.random() * 0.5 + 0.2,
+          p: Math.random() * Math.PI * 2,   // фаза мерцания: иначе все пульсируют в такт
+          c: COLORS[(Math.random() * COLORS.length) | 0]
+        });
+      }
     };
 
-    // Класс выключает в CSS самостоятельное блуждание пятна.
-    document.documentElement.classList.add("has-pointer-spot");
-    put();
+    var draw = function (t) {
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+        d.x += d.vx;
+        d.y += d.vy;
 
-    window.addEventListener("pointermove", function (e) {
-      if (e.pointerType === "touch") return;     // тянуть пятно за пальцем незачем
-      tx = e.clientX;
-      ty = e.clientY;
-      if (!running) { running = true; requestAnimationFrame(frame); }
+        // ушла за край — появляется с противоположного
+        if (d.x < -4) d.x = w + 4; else if (d.x > w + 4) d.x = -4;
+        if (d.y < -4) d.y = h + 4; else if (d.y > h + 4) d.y = -4;
+
+        var glow = 0;
+        var dx = d.x - mx, dy = d.y - my;
+        var dist2 = dx * dx + dy * dy;
+        if (dist2 < REACH * REACH) {
+          var dist = Math.sqrt(dist2) || 0.001;
+          glow = 1 - dist / REACH;
+          // мягко отталкиваем: точка не убегает, а обтекает курсор
+          d.x += (dx / dist) * glow * 0.6;
+          d.y += (dy / dist) * glow * 0.6;
+        }
+
+        var tw = reduce ? 1 : 0.75 + 0.25 * Math.sin(t / 1400 + d.p);
+        var alpha = Math.min(1, d.a * tw + glow * 0.55);
+
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r + glow * 0.9, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(" + d.c + "," + alpha.toFixed(3) + ")";
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+
+    var start = function () {
+      if (raf || document.hidden) return;
+      raf = requestAnimationFrame(draw);
+    };
+    var stop = function () {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    size();
+    seed();
+
+    if (reduce) {
+      draw(0);                              // один кадр: картинка есть, движения нет
+      stop();
+    } else {
+      start();
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) stop(); else start();
+      });
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        window.addEventListener("pointermove", function (e) {
+          if (e.pointerType === "touch") return;
+          mx = e.clientX;
+          my = e.clientY;
+        }, { passive: true });
+      }
+    }
+
+    var timer = 0;
+    window.addEventListener("resize", function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        size();
+        seed();
+        if (reduce) draw(0);
+      }, 150);
     }, { passive: true });
   };
 
@@ -153,7 +232,7 @@
   /* --- Старт -------------------------------------------------------------
      Каждый блок отдельно: если один споткнётся, остальные всё равно
      отработают, а страница не останется наполовину собранной. */
-  [fill, menu, header, spot, reveal].forEach(function (step) {
+  [fill, menu, header, particles, reveal].forEach(function (step) {
     try { step(); } catch (e) { console.error(e); }
   });
 })();

@@ -24,8 +24,8 @@
 
 <body>
 
-<!-- Фон: сетка, пятно под курсором и дежурное свечение. Стили — в style.css. -->
-<div class="bg" aria-hidden="true"><span class="bg__grid"></span><span class="bg__spot"></span><span class="bg__glow"></span></div>
+<!-- Фон: свечения работают сами, частицы на canvas рисует main.js. -->
+<div class="bg" aria-hidden="true"><span class="bg__glow bg__glow--1"></span><span class="bg__glow bg__glow--2"></span><canvas class="bg__canvas"></canvas></div>
 
 <header class="hdr">
   <div class="wrap hdr__in">
