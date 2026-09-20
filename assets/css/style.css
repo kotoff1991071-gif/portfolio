@@ -147,11 +147,14 @@ button{font:inherit;color:inherit}
 /* Меню на телефоне */
 .menu{
   position:fixed;inset:0;z-index:40;display:grid;align-content:center;gap:6px;
+  grid-template-columns:minmax(0,1fr);   /* колонка не шире экрана, что бы в неё ни положили */
   padding:0 var(--gut);background:rgba(10,10,12,.97);
   opacity:0;visibility:hidden;transition:opacity .25s var(--ease),visibility .25s;
 }
 .menu.is-open{opacity:1;visibility:visible}
-.menu a{font-family:var(--display);font-weight:800;font-size:clamp(28px,9vw,44px);padding:10px 0}
+/* :not(.btn) обязателен: иначе этот размер перебивает шрифт кнопки,
+   она раздувается вместе с колонкой и уезжает за край экрана. */
+.menu a:not(.btn){font-family:var(--display);font-weight:800;font-size:clamp(28px,9vw,44px);padding:10px 0}
 .menu .btn{margin-top:22px;justify-self:start}
 
 /* --- Первый экран ------------------------------------------------------- */
