@@ -221,35 +221,23 @@ button{font:inherit;color:inherit}
 .stat b{display:block;font-family:var(--body);font-weight:800;font-size:clamp(28px,3.6vw,38px);line-height:1;letter-spacing:-.02em}
 .stat span{display:block;margin-top:8px;font-size:13px;line-height:1.4;color:var(--text-2)}
 
-/* Телефон. Внутри — постер, живое приложение открывается по клику:
-   грузить ~100 КБ чужого JS на первом экране ради картинки незачем. */
-.phone__box{justify-self:center;width:min(290px,78vw)}
-.phone{
-  position:relative;display:block;
-  aspect-ratio:9/19.5;padding:9px;
-  background:#131318;border:1px solid var(--line-2);border-radius:42px;
-  box-shadow:0 30px 70px -30px rgba(0,0,0,.9);
-  transition:transform .35s var(--ease);
+/* Портрет на первом экране. У фото белый фон, поэтому не растворяем его
+   в тёмной странице, а подаём карточкой со скруглёнными углами. За ней —
+   размытое пятно в цветах сайта (.pulse__glow), которое медленно «дышит». */
+.pulse{position:relative;justify-self:center;width:min(420px,86vw);margin:0}
+.pulse__img{
+  position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;
+  border-radius:var(--r-lg);border:1px solid var(--line-2);
+  box-shadow:0 40px 80px -40px rgba(0,0,0,.9);
 }
-.phone::after{ /* «динамик» */
-  content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);
-  width:72px;height:6px;border-radius:99px;background:#000;opacity:.75;
+.pulse__glow{
+  position:absolute;inset:-7%;border-radius:40%;filter:blur(50px);opacity:.55;
+  background:conic-gradient(from 200deg,var(--accent-a),var(--accent-b),#8B3DFF,var(--accent-a));
 }
-.phone img{width:100%;height:100%;object-fit:cover;border-radius:34px;background:#12102a}
-.phone__play{
-  position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
-  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
-  padding:9px 16px;border-radius:var(--r-pill);
-  background:rgba(10,10,12,.78);border:1px solid var(--line-2);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  font:700 12px/1 var(--body);
-}
-.phone__cap{margin-top:14px;text-align:center;font-size:13px;color:var(--text-3)}
-@media (hover:hover){.phone:hover{transform:translateY(-6px)}}
 
 @media (min-width:900px){
   .hero__grid{grid-template-columns:1.15fr .85fr;align-items:center}
-  .phone__box{justify-self:end;width:300px}
+  .pulse{justify-self:end;width:min(480px,40vw)}
 }
 
 /* --- Секции ------------------------------------------------------------- */
@@ -296,6 +284,133 @@ button{font:inherit;color:inherit}
   .work__body{grid-template-columns:repeat(3,1fr);gap:26px}
 }
 
+/* --- Телефон у работ -----------------------------------------------------
+   Узкий экран: у каждого кейса своя картинка-мокап сверху, колонки нет.
+   Широкий: картинки прячутся, справа встаёт .stage с «липким» телефоном,
+   который крутит main.js. Порог один — 1024px — и живёт только здесь:
+   скрипт смотрит, показан ли .stage, а не сверяет ширину сам. */
+.work__shot{
+  display:block;width:min(200px,52vw);height:auto;margin:0 auto 22px;
+  filter:drop-shadow(0 24px 40px rgba(0,0,0,.55));
+}
+.work__shot--land{width:min(400px,100%)}
+.stage{display:none}
+
+@media (min-width:1024px){
+  .showcase{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:clamp(40px,5vw,72px)}
+  .work__shot{display:none}
+  /* колонка текста уже — три столбца в .work__body становятся тесными */
+  .showcase .work__body{grid-template-columns:none}
+  /* кейс держится напротив телефона дольше, чем занимает текст:
+     иначе поворот проскакивает за один оборот колёсика */
+  .showcase .work{min-height:78vh;display:flex;flex-direction:column;justify-content:center}
+  .showcase .works{gap:clamp(40px,8vh,90px)}
+  .work.is-active{border-color:var(--line-2);background:var(--surface-2)}
+
+  /* Размер телефона — от высоты окна: целиком влезает и на ноутбуке. */
+  .stage{display:block;--h:min(66vh,620px)}
+  /* Блок по размеру телефона, а не во всю высоту окна: иначе на последнем
+     кейсе он упирается в конец колонки и уезжает под шапку. */
+  .stage__sticky{
+    position:sticky;top:calc(50vh - var(--h) / 2 - 22px);
+    display:flex;flex-direction:column;align-items:center;gap:28px;
+    perspective:1600px;
+  }
+  .dev{
+    position:relative;height:var(--h);aspect-ratio:1000/2042;
+    transform-style:preserve-3d;will-change:transform;
+    filter:drop-shadow(0 40px 60px rgba(0,0,0,.6));
+  }
+  /* Координаты экрана внутри рамки сняты с самой картинки мокапа. */
+  .dev__screen{
+    position:absolute;left:2.7%;top:1.42%;width:93.69%;height:97.1%;
+    border-radius:8.5%/4%;overflow:hidden;background:#000;
+  }
+  .dev__shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+  .dev__shot.is-on{opacity:1}
+  .dev__frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  /* Блик: проходит по стеклу, пока телефон поворачивается (--glare из main.js). */
+  .dev__screen::after{
+    content:"";position:absolute;inset:-20%;pointer-events:none;
+    background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);
+    transform:translateX(calc(var(--glare,-1) * 70%));opacity:calc(1 - var(--glare,-1) * var(--glare,-1));
+  }
+
+  /* Кадры видео. --fill у каждого ролика свой (какую долю высоты кадра
+     занимает телефон) — так телефоны из видео и из мокапа одного роста.
+     Края кадра серые, а не цвета сайта, поэтому растворяем их маской. */
+  .spin{
+    position:absolute;left:50%;top:calc(var(--h) / 2);
+    height:calc(var(--h) / var(--fill,.70));width:auto;aspect-ratio:320/640;
+    transform:translate(-50%,-50%);opacity:0;pointer-events:none;
+    -webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
+    mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
+  }
+
+  .stage__cap{display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--text-3);text-align:center;max-width:320px}
+  .stage__no{font-weight:800;letter-spacing:.08em;color:var(--accent-a)}
+}
+
+/* --- Чат-боты -----------------------------------------------------------
+   Слева текст и список умений, справа «картинка» — переписка с ботом,
+   свёрстанная обычным HTML: весит ноль и не мылится ни на каком экране. */
+.bots{display:grid;gap:clamp(36px,5vw,64px);align-items:center}
+.bots h2{font-size:clamp(28px,4.6vw,50px);margin-top:14px}
+.bots__lead{margin-top:16px;color:var(--text-2);font-size:clamp(16px,1.6vw,18px);max-width:52ch}
+.bots__list{display:grid;gap:12px;margin:28px 0 30px}
+.bots__list li{
+  padding:14px 18px 14px 44px;position:relative;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);
+  font-size:14px;color:var(--text-2);
+}
+.bots__list li::before{  /* галочка в цветах сайта */
+  content:"";position:absolute;left:16px;top:17px;width:16px;height:16px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
+}
+.bots__list li::after{
+  content:"";position:absolute;left:21px;top:21px;width:6px;height:4px;
+  border:solid #0A0A0C;border-width:0 0 2px 2px;transform:rotate(-45deg);
+}
+.bots__list b{display:block;margin-bottom:3px;color:var(--text);font-family:var(--display);font-weight:700;font-size:15px}
+.bots__foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.bots__note{font-size:13px;color:var(--text-3);max-width:40ch}
+@media (min-width:640px){.bots__list{grid-template-columns:1fr 1fr}}
+@media (min-width:1024px){.bots{grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr)}}
+
+/* Окно чата */
+.chat{
+  margin:0;justify-self:center;width:min(400px,100%);
+  border:1px solid var(--line-2);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(180deg,#17161f,#101015);
+  box-shadow:0 40px 80px -40px rgba(255,77,141,.35),0 30px 60px -30px rgba(0,0,0,.9);
+}
+.chat__head{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--line);background:rgba(255,255,255,.03);
+}
+.chat__ava{
+  display:grid;place-items:center;width:38px;height:38px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:#0A0A0C;font-size:18px;
+}
+.chat__head b{display:block;font-size:15px}
+.chat__head small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)}
+.chat__head small::before{content:"";width:7px;height:7px;border-radius:50%;background:#3ddc84}
+.chat__body{display:flex;flex-direction:column;gap:10px;padding:20px 16px 22px;min-height:380px}
+.msg{
+  max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.45;
+}
+.msg b{font-weight:700}
+.msg--me{align-self:flex-end;background:linear-gradient(135deg,var(--accent-a),#ff6f6a);color:#fff;border-bottom-right-radius:6px}
+.msg--bot{align-self:flex-start;background:rgba(255,255,255,.08);color:var(--text);border-bottom-left-radius:6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:-2px}
+.chips span{
+  padding:6px 12px;border:1px solid var(--line-2);border-radius:var(--r-pill);
+  font-size:13px;color:var(--text-2);
+}
+.chips .is-on{border-color:var(--accent-a);color:var(--text);background:var(--accent-soft)}
+.msg--typing{display:flex;gap:5px;padding:13px 16px}
+.msg--typing i{width:7px;height:7px;border-radius:50%;background:var(--text-3)}
+
 /* --- Услуги ------------------------------------------------------------- */
 .services{display:grid;gap:18px}
 .srv{
@@ -320,6 +435,61 @@ button{font:inherit;color:inherit}
 .srv__price b{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.2vw,22px)}
 .srv__price span{font-size:13px;color:var(--text-3);text-align:right}
 @media (min-width:820px){.services{grid-template-columns:1fr 1fr}}
+
+/* --- Сдача проекта -------------------------------------------------------
+   Пять шагов с номерами. Номер рисует счётчик CSS, а не разметка: шаг
+   можно переставить или удалить, и нумерация не собьётся. */
+.steps{display:grid;gap:14px;counter-reset:step;list-style:none;margin:0;padding:0}
+.step{
+  position:relative;padding:22px 22px 22px 70px;
+  border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);
+  font-size:14px;color:var(--text-2);counter-increment:step;
+}
+.step::before{
+  content:counter(step,decimal-leading-zero);
+  position:absolute;left:22px;top:20px;
+  font:800 20px/1 var(--display);
+  background:linear-gradient(96deg,var(--accent-a),var(--accent-b));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.step b{display:block;margin-bottom:6px;color:var(--text);font-family:var(--display);font-weight:700;font-size:16px}
+@media (min-width:1024px){
+  .steps{grid-template-columns:repeat(5,1fr);gap:12px}
+  .step{padding:24px 20px}
+  .step::before{position:static;display:block;margin-bottom:18px;font-size:28px}
+}
+
+/* --- Отзывы -------------------------------------------------------------
+   Три колонки на широком экране, одна на телефоне. Карточек может быть
+   меньше — сетка перестроится сама. Большая кавычка — декор в цветах сайта. */
+.reviews{display:grid;gap:18px}
+.review{
+  position:relative;display:flex;flex-direction:column;margin:0;
+  padding:clamp(24px,3vw,32px);padding-top:clamp(52px,5vw,60px);
+  border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);
+  transition:border-color .3s var(--ease),background-color .3s var(--ease);
+}
+@media (hover:hover){.review:hover{border-color:var(--line-2);background:var(--surface-2)}}
+.review::before{
+  content:"“";position:absolute;left:clamp(22px,3vw,30px);top:6px;
+  font:800 72px/1 var(--display);
+  background:linear-gradient(96deg,var(--accent-a),var(--accent-b));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.review blockquote{margin:0 0 24px;color:var(--text);font-size:15px;line-height:1.6}
+.review figcaption{display:flex;align-items:center;gap:12px;margin-top:auto}
+.review__ava{
+  display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
+  color:#0A0A0C;font:800 15px/1 var(--display);
+}
+.review figcaption b{display:block;font-size:15px}
+.review figcaption small{display:block;font-size:13px;color:var(--text-3)}
+.review__tag{
+  margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);
+}
+@media (min-width:900px){.reviews{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}}
 
 /* --- О себе ------------------------------------------------------------- */
 .about{display:grid;gap:clamp(28px,4vw,48px)}
@@ -351,6 +521,27 @@ button{font:inherit;color:inherit}
 .cta p{color:var(--text-2);max-width:48ch;margin-bottom:28px}
 .cta__row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
 .cta__row .tg{font-size:14px;color:var(--text-3)}
+
+/* Карточки со всеми способами связи: две колонки на планшете, четыре на
+   широком экране. Длинная почта переносится, а не распирает карточку. */
+.contacts{display:grid;gap:10px;margin-top:28px}
+.contact{
+  display:flex;align-items:center;gap:14px;height:100%;
+  padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-md);
+  background:rgba(255,255,255,.03);
+  transition:border-color .25s var(--ease),background-color .25s var(--ease);
+}
+a.contact:hover{border-color:var(--line-2);background:var(--surface-2)}
+.contact__ico{
+  display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;
+  background:var(--accent-soft);color:var(--accent-a);
+}
+.contact__ico svg{width:20px;height:20px}
+.contact__ico--max{font:800 17px/1 var(--display)}
+.contact small{display:block;font-size:12px;color:var(--text-3);letter-spacing:.04em}
+.contact b{display:block;font-size:15px;font-weight:700;overflow-wrap:anywhere}
+@media (min-width:560px){.contacts{grid-template-columns:1fr 1fr}}
+@media (min-width:1024px){.contacts{grid-template-columns:1fr 1fr 1fr 1.45fr}}
 
 /* --- Подвал ------------------------------------------------------------- */
 .ftr{padding:30px 0 40px;border-top:1px solid var(--line);margin-top:clamp(40px,6vw,80px)}
@@ -409,11 +600,41 @@ button{font:inherit;color:inherit}
     29%{transform:translate3d(0,.02em,0) rotate(1.5deg)}
   }
 
+  /* Свечение за портретом медленно дышит: разгорается, чуть растёт и
+     поворачивается, так что цвета перетекают по краю. Сам портрет стоит
+     на месте — лицо не должно «плавать». Только transform и opacity. */
+  .pulse__glow{animation:pulse-glow 6s ease-in-out infinite}
+  @keyframes pulse-glow{
+    0%,100%{opacity:.4;transform:scale(.96) rotate(0deg)}
+    50%{opacity:.7;transform:scale(1.06) rotate(40deg)}
+  }
+
+  /* Переписка с ботом: сообщения приходят по очереди, когда окно чата
+     доехало до экрана, а в конце бот «печатает» — точки подпрыгивают. */
+  .js .chat .chat__body>*{opacity:0;transform:translateY(10px)}
+  .js .chat.is-visible .chat__body>*{animation:msg-in .45s var(--ease) forwards}
+  .js .chat.is-visible .chat__body>:nth-child(1){animation-delay:.5s}
+  .js .chat.is-visible .chat__body>:nth-child(2){animation-delay:1.5s}
+  .js .chat.is-visible .chat__body>:nth-child(3){animation-delay:2.1s}
+  .js .chat.is-visible .chat__body>:nth-child(4){animation-delay:3s}
+  .js .chat.is-visible .chat__body>:nth-child(5){animation-delay:4s}
+  .js .chat.is-visible .chat__body>:nth-child(6){animation-delay:5s}
+  @keyframes msg-in{to{opacity:1;transform:none}}
+  .msg--typing i{animation:typing 1.2s ease-in-out infinite}
+  .msg--typing i:nth-child(2){animation-delay:.15s}
+  .msg--typing i:nth-child(3){animation-delay:.3s}
+  @keyframes typing{
+    0%,60%,100%{transform:translateY(0);opacity:.5}
+    30%{transform:translateY(-4px);opacity:1}
+  }
+
   .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
   .js .reveal.is-visible{opacity:1;transform:none}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
+  /* телефон у работ не крутится — экраны просто сменяют друг друга */
+  .dev__shot{transition:opacity .4s var(--ease)}
 }
 
 /* --- Курсор --------------------------------------------------------------
@@ -429,7 +650,7 @@ button{font:inherit;color:inherit}
    Перенесёшь выше — курсор на кнопках снова станет системным. */
 @media (hover:hover) and (pointer:fine){
   body{cursor:url("data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2224%22 height%3D%2224%22 viewBox%3D%220 0 24 24%22%3E%3Cdefs%3E%3ClinearGradient id%3D%22a%22 x1%3D%220%22 y1%3D%220%22 x2%3D%221%22 y2%3D%221%22%3E%3Cstop offset%3D%220%22 stop-color%3D%22%23FF4D8D%22%2F%3E%3Cstop offset%3D%221%22 stop-color%3D%22%23FF9A3C%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath d%3D%22M3 2.2 3 18.6 7.4 14.6 10.2 20.9 13.3 19.5 10.6 13.5 16.2 13.2Z%22 fill%3D%22url(%23a)%22 stroke%3D%22%230A0A0C%22 stroke-width%3D%221.5%22 stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E") 3 2,auto}
-  :is(a,button,summary,label,[role="button"],.btn,.burger,.phone){
+  :is(a,button,summary,label,[role="button"],.btn,.burger){
     cursor:url("data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2226%22 height%3D%2226%22 viewBox%3D%220 0 26 26%22%3E%3Cdefs%3E%3ClinearGradient id%3D%22b%22 x1%3D%220%22 y1%3D%220%22 x2%3D%221%22 y2%3D%221%22%3E%3Cstop offset%3D%220%22 stop-color%3D%22%23FF4D8D%22%2F%3E%3Cstop offset%3D%221%22 stop-color%3D%22%23FF9A3C%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle cx%3D%2213%22 cy%3D%2213%22 r%3D%228%22 fill%3D%22none%22 stroke%3D%22%230A0A0C%22 stroke-width%3D%223.5%22 opacity%3D%22.55%22%2F%3E%3Ccircle cx%3D%2213%22 cy%3D%2213%22 r%3D%228%22 fill%3D%22none%22 stroke%3D%22url(%23b)%22 stroke-width%3D%221.8%22%2F%3E%3Ccircle cx%3D%2213%22 cy%3D%2213%22 r%3D%221.9%22 fill%3D%22url(%23b)%22 stroke%3D%22%230A0A0C%22 stroke-width%3D%22.8%22%2F%3E%3C%2Fsvg%3E") 13 13,pointer;
   }
   input,textarea,select{cursor:auto}

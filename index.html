@@ -3,13 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Имя Фамилия — сайты и мобильные приложения для малого бизнеса</title>
-<meta name="description" content="Делаю сайты и мобильные приложения для малого бизнеса: лендинги под заявки, многостраничники, веб-приложения для учёта, приложения под Android с публикацией в RuStore.">
+<title>Михаил Котов — сайты и мобильные приложения для малого бизнеса</title>
+<meta name="description" content="Делаю сайты и мобильные приложения для малого бизнеса: лендинги под заявки, многостраничники, веб-приложения для учёта, чат-боты и приложения под Android с публикацией в RuStore.">
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:title" content="Имя Фамилия — сайты и мобильные приложения">
-<meta property="og:description" content="Лендинги, многостраничники, веб-приложения под задачу бизнеса и приложения под Android. Три работы, которые можно открыть и потыкать.">
+<meta property="og:title" content="Михаил Котов — сайты и мобильные приложения">
+<meta property="og:description" content="Лендинги, многостраничники, веб-приложения под задачу бизнеса, чат-боты и приложения под Android. Три работы, которые можно открыть и потыкать.">
+<!-- Картинка для превью ссылки в мессенджерах, 1200×630.
+     TODO: когда появится домен, сделать адрес полным (https://домен/assets/img/og.jpg) —
+     Телеграм и ВКонтакте надёжно понимают только полный адрес. -->
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Михаил Котов — сайты, приложения и чат-боты для малого бизнеса">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0A0A0C">
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -30,16 +38,18 @@
 
 <header class="hdr">
   <div class="wrap hdr__in">
-    <a class="mark" href="#top"><span data-c="person.wordmark">ИФ</span></a>
+    <a class="mark" href="#top"><span data-c="person.wordmark">МК</span></a>
 
     <nav class="nav" aria-label="Разделы">
-      <a href="#works">Работы</a>
-      <a href="#services">Услуги</a>
       <a href="#about">О себе</a>
+      <a href="#works">Работы</a>
+      <a href="#bots">Чат-боты</a>
+      <a href="#services">Услуги</a>
+      <a href="#reviews">Отзывы</a>
       <a href="#contact">Контакты</a>
     </nav>
 
-    <a class="btn btn--primary btn--sm" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+    <a class="btn btn--primary btn--sm" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">
       Обсудить проект
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
     </a>
@@ -51,11 +61,13 @@
 </header>
 
 <nav class="menu" id="menu" aria-label="Разделы">
-  <a href="#works">Работы</a>
-  <a href="#services">Услуги</a>
   <a href="#about">О себе</a>
+  <a href="#works">Работы</a>
+  <a href="#bots">Чат-боты</a>
+  <a href="#services">Услуги</a>
+  <a href="#reviews">Отзывы</a>
   <a href="#contact">Контакты</a>
-  <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">Обсудить проект</a>
+  <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">Обсудить проект</a>
 </nav>
 
 <main id="top">
@@ -72,7 +84,7 @@
         <p class="hero__lead" data-c="person.tagline">Делаю сайты и мобильные приложения для малого бизнеса. От лендинга до приложения в RuStore.</p>
 
         <div class="hero__cta">
-          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">
             Обсудить проект
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
           </a>
@@ -80,21 +92,42 @@
         </div>
 
         <ul class="stats">
-          <li class="stat"><b data-c="stats.0.value">3</b><span data-c="stats.0.label">проекта можно открыть прямо сейчас</span></li>
+          <li class="stat"><b data-c="stats.0.value">3</b><span data-c="stats.0.label">проекта в портфолио, 2 — с живым демо</span></li>
           <li class="stat"><b data-c="stats.1.value">2</b><span data-c="stats.1.label">собраны в приложение под Android</span></li>
-          <li class="stat"><b data-c="stats.2.value">0</b><span data-c="stats.2.label">конструкторов: весь код свой</span></li>
+          <li class="stat"><b data-c="stats.2.value">0</b><span data-c="stats.2.label">конструкторов: только код, который можно передать другому разработчику</span></li>
         </ul>
       </div>
 
-      <div class="phone__box">
-        <a class="phone" href="demo/dennochka/index.html" target="_blank" rel="noopener" aria-label="Открыть демо приложения «Деньночка»">
-          <img src="assets/img/dennochka-hero.svg" width="375" height="812" alt="Экран приложения «Деньночка»: список сказок на ночь">
-          <span class="phone__play">
-            Живое демо
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
-          </span>
-        </a>
-        <p class="phone__cap">«Деньночка» — открывается прямо в браузере</p>
+      <!-- Портрет — карточка на белом фоне, за ней «дышит» свечение в цветах
+           сайта. Движение — в блоке «Движение» в конце style.css. -->
+      <figure class="pulse">
+        <span class="pulse__glow" aria-hidden="true"></span>
+        <img class="pulse__img" src="assets/img/hero-portrait.webp" width="1024" height="1024" alt="Михаил Котов: одна половина лица — фотография, другая — яркий рисунок" fetchpriority="high" decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- ====================== О себе ====================== -->
+  <section class="sec" id="about">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <p class="eyebrow">О себе</p>
+        <h2>Коротко.</h2>
+      </div>
+
+      <div class="about reveal">
+        <div class="about__text">
+          <p>Веду проект сам, от первого экрана до выкладки. Не собираю сайты в конструкторе: <b>то, что я сдаю, можно открыть, посмотреть исходники и поменять без меня.</b></p>
+          <p>Работаю с ИИ-инструментами: они берут на себя рутину, поэтому я делаю быстрее и дешевле студии. <b>А решения, проверка и ответственность за результат — на мне.</b></p>
+          <p>Берусь за задачи, где нужно не «красиво», а чтобы работало: заявки доходили, посещаемость считалась, приложение открывалось в метро без интернета.</p>
+          <p>Обсуждение начинаю не с того, сколько будет страниц, а с того, <b>что должно измениться в вашей работе</b> после запуска.</p>
+        </div>
+
+        <ul class="facts">
+          <li><b>Скорость — не украшение</b>Эта страница грузится меньше чем за секунду. Ваш сайт будет таким же.</li>
+          <li><b>Один исполнитель</b>Без менеджеров и пересказов: вы говорите напрямую с тем, кто делает проект.</li>
+          <li><b>Код остаётся у вас</b>Исходники, доступы и домен — ваши. Уйти ко мне на обслуживание вы не обязаны.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -108,10 +141,17 @@
         <p>Два приложения можно открыть с телефона и потыкать — они работают в браузере, ставить ничего не нужно.</p>
       </div>
 
+      <!-- На широком экране справа от кейсов «липкий» телефон: при прокрутке
+           он проворачивается и показывает экран того кейса, что сейчас
+           напротив. На узком экране колонки нет — у каждого кейса своя
+           картинка .work__shot. Логика — в main.js, блок «Телефон у работ». -->
+      <div class="showcase">
       <div class="works">
 
         <!-- 01 -->
-        <article class="work reveal">
+        <article class="work reveal" data-cap="Деньночка — сказка, где герой сам ребёнок">
+          <img class="work__shot" src="assets/img/phone/mockup-dennochka.webp" width="1000" height="2042" loading="lazy" decoding="async" alt="Экран сказки в «Деньночке»: «Маша и светлячок Тик»">
+
           <div class="work__top">
             <span class="work__no">01</span>
             <h3>Деньночка</h3>
@@ -147,7 +187,9 @@
         </article>
 
         <!-- 02 -->
-        <article class="work reveal">
+        <article class="work reveal" data-cap="Котобол — пляжный волейбол для котиков">
+          <img class="work__shot work__shot--land" src="assets/img/phone/mockup-kotobol.webp" width="2042" height="1000" loading="lazy" decoding="async" alt="«Котобол» на телефоне, повёрнутом горизонтально: два котика и мяч над сеткой">
+
           <div class="work__top">
             <span class="work__no">02</span>
             <h3>Котобол</h3>
@@ -183,7 +225,9 @@
         </article>
 
         <!-- 03 -->
-        <article class="work reveal">
+        <article class="work reveal" data-cap="Дневник — посещаемость в один тап">
+          <img class="work__shot" src="assets/img/phone/mockup-football.webp" width="1000" height="2042" loading="lazy" decoding="async" alt="Экран посещаемости в дневнике футбольной школы: кто был, кто нет">
+
           <div class="work__top">
             <span class="work__no">03</span>
             <h3>Дневник футбольной школы</h3>
@@ -215,6 +259,77 @@
         </article>
 
       </div>
+
+      <!-- Экраны лежат под рамкой в том же порядке, что и кейсы. Экран
+           «Котобола» уже повёрнут на бок: телефон ложится горизонтально,
+           и картинка встаёт как надо. Всё это дублирует .work__shot,
+           поэтому от чтения с экрана спрятано. -->
+      <div class="stage" aria-hidden="true">
+        <div class="stage__sticky">
+          <div class="dev">
+            <div class="dev__screen">
+              <img class="dev__shot is-on" src="assets/img/phone/screen-dennochka.webp" width="937" height="1983" loading="lazy" decoding="async" alt="">
+              <img class="dev__shot" src="assets/img/phone/screen-kotobol.webp" width="937" height="1983" loading="lazy" decoding="async" alt="">
+              <img class="dev__shot" src="assets/img/phone/screen-football.webp" width="937" height="1983" loading="lazy" decoding="async" alt="">
+            </div>
+            <img class="dev__frame" src="assets/img/phone/frame.webp" width="1000" height="2042" loading="lazy" decoding="async" alt="">
+          </div>
+          <!-- Все три кейса — не мокап, а кадры видео с
+               поворачивающимся телефоном. data-at — номер кейса с нуля,
+               --fill — какую долю высоты кадра занимает телефон в ролике. -->
+          <canvas class="spin" data-spin="assets/img/spin-dennochka/" data-frames="90" data-at="0" width="320" height="640" style="--fill:.75"></canvas>
+          <canvas class="spin" data-spin="assets/img/spin-kotobol/" data-frames="90" data-at="1" width="320" height="640" style="--fill:.70"></canvas>
+          <canvas class="spin" data-spin="assets/img/spin-football/" data-frames="90" data-at="2" width="320" height="640" style="--fill:.74"></canvas>
+          <p class="stage__cap"><span class="stage__no">01</span> <span class="stage__txt">Деньночка — сказка, где герой сам ребёнок</span></p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== Чат-боты ====================== -->
+  <section class="sec" id="bots">
+    <div class="wrap bots">
+      <div class="bots__text reveal">
+        <p class="eyebrow">Чат-боты</p>
+        <h2>Сотрудник, который<br><span class="grad">не спит и не устаёт.</span></h2>
+        <p class="bots__lead">Делаю ботов для Телеграма, ВКонтакте и сайта. Бот отвечает клиентам за секунду — ночью, в выходные и в час пик, когда вы заняты делом, а не перепиской.</p>
+
+        <ul class="bots__list">
+          <li><b>Записывает клиентов</b>Показывает свободное время, записывает, переносит и напоминает о визите за день — неявок становится меньше.</li>
+          <li><b>Отвечает на частые вопросы</b>Цены, адрес, график, «а у вас есть…» — бот знает ответы и не раздражается на сотый одинаковый вопрос.</li>
+          <li><b>Принимает заявки и оплату</b>Собирает имя, телефон и суть задачи, отправляет вам готовую заявку, может выставить счёт.</li>
+          <li><b>Говорит по-человечески</b>С нейросетью внутри понимает вопрос своими словами, а не только кнопки, и отвечает по вашим материалам.</li>
+          <li><b>Зовёт человека, когда нужно</b>Сложный случай бот не решает наугад, а передаёт вам — вместе со всей перепиской.</li>
+          <li><b>Дружит с вашими таблицами</b>Заявки и записи падают в Google-таблицу, CRM или календарь, ничего не нужно переписывать руками.</li>
+        </ul>
+
+        <div class="bots__foot">
+          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">
+            Хочу бота
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
+          </a>
+          <span class="bots__note">Бот для записи и заявок — от 40 000 ₽ и 1–2 недели. С нейросетью — от 100 000 ₽, плюс её расход по факту.</span>
+        </div>
+      </div>
+
+      <!-- Картинка — живая переписка: сообщения появляются по очереди, когда
+           блок доезжает до экрана (класс .is-visible от наблюдателя .reveal).
+           Без скрипта или при «уменьшить движение» просто видна вся сразу. -->
+      <figure class="chat reveal" aria-label="Пример переписки клиента с ботом салона: запись на стрижку">
+        <div class="chat__head">
+          <span class="chat__ava" aria-hidden="true">✂</span>
+          <span><b>Салон «Ромашка»</b><small>бот · в сети</small></span>
+        </div>
+        <div class="chat__body">
+          <p class="msg msg--me">Здравствуйте! Можно на стрижку в субботу?</p>
+          <p class="msg msg--bot">Конечно! В субботу свободно: <b>11:00</b>, <b>14:30</b> и <b>17:00</b>. Какое время удобно?</p>
+          <p class="chips" aria-hidden="true"><span>11:00</span><span class="is-on">14:30</span><span>17:00</span></p>
+          <p class="msg msg--me">14:30</p>
+          <p class="msg msg--bot">Готово ✅ Записал вас на субботу, 14:30, к мастеру Ольге. Напомню накануне вечером.</p>
+          <p class="msg msg--bot msg--typing" aria-hidden="true"><i></i><i></i><i></i></p>
+        </div>
+      </figure>
     </div>
   </section>
 
@@ -239,8 +354,8 @@
             <li>Подключение Яндекс.Метрики и целей</li>
           </ul>
           <p class="srv__price">
-            <b data-c="prices.landing.price">от 25 000 ₽</b>
-            <span data-c="prices.landing.term">3–7 дней</span>
+            <b data-c="prices.landing.price">от 30 000 ₽</b>
+            <span data-c="prices.landing.term">5–10 дней</span>
           </p>
         </article>
 
@@ -254,8 +369,8 @@
             <li>Базовая настройка под поиск</li>
           </ul>
           <p class="srv__price">
-            <b data-c="prices.site.price">от 45 000 ₽</b>
-            <span data-c="prices.site.term">1–2 недели</span>
+            <b data-c="prices.site.price">от 60 000 ₽</b>
+            <span data-c="prices.site.term">2–3 недели</span>
           </p>
         </article>
 
@@ -269,8 +384,8 @@
             <li>Выгрузка данных в таблицу</li>
           </ul>
           <p class="srv__price">
-            <b data-c="prices.webapp.price">от 70 000 ₽</b>
-            <span data-c="prices.webapp.term">от 3 недель</span>
+            <b data-c="prices.webapp.price">от 150 000 ₽</b>
+            <span data-c="prices.webapp.term">от 4 недель</span>
           </p>
         </article>
 
@@ -284,8 +399,8 @@
             <li>Сборка, подписание и выкладка в RuStore</li>
           </ul>
           <p class="srv__price">
-            <b data-c="prices.mobile.price">от 120 000 ₽</b>
-            <span data-c="prices.mobile.term">от 4 недель</span>
+            <b data-c="prices.mobile.price">от 180 000 ₽</b>
+            <span data-c="prices.mobile.term">от 6 недель</span>
           </p>
         </article>
 
@@ -293,26 +408,81 @@
     </div>
   </section>
 
-  <!-- ====================== О себе ====================== -->
-  <section class="sec" id="about">
+  <!-- ====================== Как сдаю проект ====================== -->
+  <section class="sec" id="handover">
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">О себе</p>
-        <h2>Коротко.</h2>
+        <p class="eyebrow">Сдача проекта</p>
+        <h2>Всё ваше —<br><span class="grad">с первого дня.</span></h2>
+        <p>Домен, хостинг и аккаунты сразу регистрируются на вас, а я работаю в них как приглашённый разработчик. К концу проекта передавать почти нечего — остаётся отдать ключи и показать, как всем пользоваться.</p>
       </div>
 
-      <div class="about reveal">
-        <div class="about__text">
-          <p>Пишу код сам, от первого экрана до выкладки. Не собираю сайты в конструкторе: <b>то, что я сдаю, можно открыть, посмотреть исходники и поменять без меня.</b></p>
-          <p>Берусь за задачи, где нужно не «красиво», а чтобы работало: заявки доходили, посещаемость считалась, приложение открывалось в метро без интернета.</p>
-          <p>Обсуждение начинаю не с того, сколько будет страниц, а с того, <b>что должно измениться в вашей работе</b> после запуска.</p>
-        </div>
+      <ol class="steps">
+        <li class="step reveal">
+          <b>Аккаунты на вас</b>
+          Домен, хостинг, база данных, аккаунт в RuStore и бот в Телеграме оформляются на ваше имя и почту. Оплата — с вашей карты, напрямую сервисам.
+        </li>
+        <li class="step reveal">
+          <b>Код в вашем репозитории</b>
+          Исходники лежат на GitHub в вашем аккаунте, с инструкцией: как запустить, как обновить, где что лежит. Любой другой разработчик разберётся без меня.
+        </li>
+        <li class="step reveal">
+          <b>Паспорт проекта</b>
+          Один документ: что где работает, какие аккаунты есть, когда продлевать домен и куда платить. Для приложения — ключ подписи, без которого не выпустить обновление.
+        </li>
+        <li class="step reveal">
+          <b>Созвон и видео</b>
+          Показываю на живом проекте, как поменять текст и цены, где смотреть заявки. Записываю на видео, чтобы можно было пересмотреть.
+        </li>
+        <li class="step reveal">
+          <b>Доступы — вам, мои — прочь</b>
+          Пароли передаю через менеджер паролей, а не в переписке, вы их сразу меняете. Свои доступы я удаляю — или оставляю, если договорились о поддержке.
+        </li>
+      </ol>
+    </div>
+  </section>
 
-        <ul class="facts">
-          <li><b>Скорость — не украшение</b>Эта страница грузится меньше чем за секунду. Ваш сайт будет таким же.</li>
-          <li><b>Один исполнитель</b>Без менеджеров и пересказов: вы говорите напрямую с тем, кто пишет код.</li>
-          <li><b>Код остаётся у вас</b>Исходники, доступы и домен — ваши. Уйти ко мне на обслуживание вы не обязаны.</li>
-        </ul>
+  <!-- ====================== Отзывы ====================== -->
+  <!-- TODO: заменить на настоящие отзывы клиентов — их слова, с их
+       разрешения. Выдуманные отзывы на сайте с услугами — обман, и
+       клиенты это чувствуют. Лучше два настоящих, чем три красивых:
+       лишнюю карточку просто удалите, сетка перестроится сама. -->
+  <section class="sec" id="reviews">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <p class="eyebrow">Отзывы</p>
+        <h2>Что говорят<br><span class="grad">те, с кем работал.</span></h2>
+      </div>
+
+      <div class="reviews">
+
+        <figure class="review reveal">
+          <blockquote>«[Текст отзыва. Лучше всего работает история: как было до — что изменилось после. Например, сколько времени теперь уходит на учёт или сколько заявок приходит.]»</blockquote>
+          <figcaption>
+            <span class="review__ava" aria-hidden="true">[И]</span>
+            <span><b>[Имя Фамилия]</b><small>[Должность, компания]</small></span>
+          </figcaption>
+          <p class="review__tag">[Проект: например, «Дневник футбольной школы»]</p>
+        </figure>
+
+        <figure class="review reveal">
+          <blockquote>«[Текст отзыва: что клиенту понравилось в работе — сроки, общение, результат. Своими словами клиента, без правок «под рекламу».]»</blockquote>
+          <figcaption>
+            <span class="review__ava" aria-hidden="true">[И]</span>
+            <span><b>[Имя Фамилия]</b><small>[Должность, компания]</small></span>
+          </figcaption>
+          <p class="review__tag">[Проект]</p>
+        </figure>
+
+        <figure class="review reveal">
+          <blockquote>«[Текст отзыва. Можно попросить клиента ответить на два вопроса: почему выбрали вас и что изменилось после запуска.]»</blockquote>
+          <figcaption>
+            <span class="review__ava" aria-hidden="true">[И]</span>
+            <span><b>[Имя Фамилия]</b><small>[Должность, компания]</small></span>
+          </figcaption>
+          <p class="review__tag">[Проект]</p>
+        </figure>
+
       </div>
     </div>
   </section>
@@ -324,12 +494,40 @@
         <h2>Расскажите, <span class="grad">что нужно.</span></h2>
         <p>Напишите пару предложений о задаче. Отвечу, что тут реально сделать, сколько это стоит и сколько займёт. Если задача не моя — скажу сразу.</p>
         <div class="cta__row">
-          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/username" target="_blank" rel="noopener">
+          <a class="btn btn--primary" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">
             Написать в Телеграм
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
           </a>
-          <span class="tg" data-c="person.tgLabel">@username</span>
+          <span class="tg">или любым способом ниже</span>
         </div>
+
+        <!-- Все способы связи. Значения — из content.js (person.*). -->
+        <ul class="contacts">
+          <li>
+            <a class="contact" data-href="person.tgUrl" href="https://t.me/Mike71911" target="_blank" rel="noopener">
+              <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.4 4.1 2.9 11.2c-1.3.5-1.2 1.3-.2 1.6l4.7 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.5ZM8.4 14l9.9-6.3c.5-.3.9-.1.5.2l-8.5 7.7-.3 3.6L8.4 14Z"/></svg></span>
+              <span><small>Телеграм</small><b data-c="person.tgLabel">@Mike71911</b></span>
+            </a>
+          </li>
+          <li>
+            <span class="contact">
+              <span class="contact__ico contact__ico--max" aria-hidden="true">M</span>
+              <span><small>MAX</small><b data-c="person.maxLabel">+7 926 018-09-03</b></span>
+            </span>
+          </li>
+          <li>
+            <a class="contact" data-href="person.phoneUrl" href="tel:+79260180903">
+              <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span>
+              <span><small>Телефон</small><b data-c="person.phone">+7 926 018-09-03</b></span>
+            </a>
+          </li>
+          <li>
+            <a class="contact" data-href="person.emailUrl" href="mailto:mihail.kotov.91@mail.ru">
+              <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+              <span><small>Почта</small><b data-c="person.email">mihail.kotov.91@mail.ru</b></span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
@@ -338,9 +536,8 @@
 
 <footer class="ftr">
   <div class="wrap ftr__in">
-    <span><span data-c="person.name">Имя Фамилия</span> · <span data-c="person.city">Работаю удалённо</span></span>
-    <a href="deck.html">Короткая презентация →</a>
-    <span>Сайт сделан вручную: HTML, CSS, JS. Без конструкторов и фреймворков.</span>
+    <span><span data-c="person.name">Михаил Котов</span> · <span data-c="person.city">Работаю удалённо</span></span>
+    <span>Сайт написан кодом с помощью ИИ: HTML, CSS, JS. Без конструкторов и фреймворков.</span>
   </div>
 </footer>
 

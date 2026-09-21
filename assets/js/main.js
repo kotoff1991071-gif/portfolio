@@ -241,10 +241,245 @@
     setTimeout(function () { if (!answered) showAll(); }, 1000);
   };
 
+  /* --- Телефон у работ ----------------------------------------------------
+     Пока кейсы едут мимо, телефон стоит на месте и показывает тот, что
+     сейчас напротив. Между кейсами он проворачивается вокруг вертикальной
+     оси: в середине поворота стоит ребром — в этот момент экран и меняется,
+     поэтому подмены не видно. Кейс с атрибутом data-land укладывает
+     телефон набок (сейчас такого нет, но умение осталось).
+
+     Поворот между кейсами считаем от прокрутки: крутишь колёсико назад —
+     телефон честно поворачивается обратно. А пока читаешь кейс, телефон
+     живёт сам: мокап плавно покачивается, у «Котобола» идёт видео.  */
+  var showcase = function () {
+    var stage = document.querySelector(".stage");
+    var dev = stage && stage.querySelector(".dev");
+    if (!dev) return;
+
+    var works = Array.prototype.slice.call(document.querySelectorAll(".showcase .work"));
+    var shots = dev.querySelectorAll(".dev__shot");
+    var screen = dev.querySelector(".dev__screen");
+    var no = stage.querySelector(".stage__no");
+    var txt = stage.querySelector(".stage__txt");
+    if (works.length < 2 || shots.length !== works.length) return;
+
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var land = works.map(function (w) { return w.hasAttribute("data-land") ? 1 : 0; });
+    var shown = -1, active = -1, tick = false;
+    var SPIN_FPS = 15;          // с какой частотой нарезаны кадры видео
+    var SPIN_SPEED = 0.6;       // скорость проигрывания: 1 — как в ролике, меньше — медленнее
+    var SPIN_SEAM = 12;         // кадров на плавный стык конца ролика с началом
+    var SWAY_PERIOD = 9;        // секунд на одно покачивание мокапа
+
+    // Кадры видео для части кейсов: пока такой кейс напротив, вместо мокапа
+    // стоит телефон из видео и проигрывается сам. Кадры, а не <video>:
+    // так ролик не зависит от автоплея и не мигает при перемотке.
+    // Грузим, только когда колонка с телефоном вообще показана.
+    var spins = Array.prototype.map.call(stage.querySelectorAll(".spin"), function (el) {
+      return { el: el, ctx: el.getContext("2d"), at: +el.getAttribute("data-at"),
+               frames: [], drawn: -1, vis: 0, start: 0 };
+    }).filter(function (s) { return s.ctx; });
+    var spinOf = function (i) {
+      for (var k = 0; k < spins.length; k++) if (spins[k].at === i) return spins[k];
+      return null;
+    };
+    var loadSpin = function (s) {
+      if (s.frames.length) return;
+      var base = s.el.getAttribute("data-spin");
+      var n = +s.el.getAttribute("data-frames");
+      for (var k = 0; k < n; k++) {
+        var img = new Image();
+        img.decoding = "async";
+        img.onload = function () { s.drawn = -1; request(); };   // догрузился нужный кадр — перерисуем
+        img.src = base + ("00" + k).slice(-3) + ".webp";
+        s.frames.push(img);
+      }
+    };
+    // Кадр k или, если он ещё не пришёл, ближайший загруженный — лишь бы не пусто.
+    var frameNear = function (s, k) {
+      for (var d = 0; d < s.frames.length; d++) {
+        var a = s.frames[k - d], b = s.frames[k + d];
+        if (a && a.complete && a.naturalWidth) return { img: a, exact: !d };
+        if (b && b.complete && b.naturalWidth) return { img: b, exact: !d };
+      }
+      return null;
+    };
+    // Рисует кадр k, а поверх — кадр over с прозрачностью alpha (для стыка).
+    var drawSpin = function (s, k, over, alpha) {
+      var key = k + ":" + (alpha > 0 ? over + ":" + alpha.toFixed(2) : "");
+      if (key === s.drawn) return;
+      var base = frameNear(s, k);
+      if (!base) return;
+      var w = s.el.width, h = s.el.height;
+      s.ctx.globalAlpha = 1;
+      s.ctx.drawImage(base.img, 0, 0, w, h);
+      var top = alpha > 0 ? frameNear(s, over) : null;
+      if (top) { s.ctx.globalAlpha = alpha; s.ctx.drawImage(top.img, 0, 0, w, h); s.ctx.globalAlpha = 1; }
+      s.drawn = base.exact && (!top || top.exact) ? key : -1;
+    };
+
+    var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+    // Поворот занимает середину пути между кейсами, по краям телефон стоит
+    // ровно — иначе он крутился бы непрерывно и читать экран было бы нельзя.
+    var ease = function (f) {
+      var x = clamp((f - 0.28) / 0.44, 0, 1);
+      return x * x * (3 - 2 * x);
+    };
+
+    var show = function (i) {
+      if (i === shown) return;
+      shown = i;
+      for (var k = 0; k < shots.length; k++) shots[k].classList.toggle("is-on", k === i);
+    };
+
+    var mark = function (i) {
+      if (i === active) return;
+      active = i;
+      works.forEach(function (w, k) { w.classList.toggle("is-active", k === i); });
+      if (no) no.textContent = ("0" + (i + 1)).slice(-2);
+      if (txt) txt.textContent = works[i].getAttribute("data-cap") || "";
+    };
+
+    // Состояние от прокрутки: считаем на scroll, рисуем в цикле кадров.
+    var st = { t: 0, from: 0, to: 0, p: 0, on: false };
+
+    var measure = function () {
+      tick = false;
+      // На узком экране колонки нет — решает CSS, как и с частицами фона.
+      st.on = window.getComputedStyle(stage).display !== "none";
+      if (!st.on) return;
+
+      // Где мы между кейсами: 0 — первый по центру окна, 1 — второй, 1.5 — посередине.
+      var mid = window.innerHeight / 2;
+      var c = works.map(function (w) {
+        var r = w.getBoundingClientRect();
+        return r.top + r.height / 2 - mid;
+      });
+      var t = 0;
+      if (c[0] < 0) {
+        t = works.length - 1;
+        for (var i = 0; i < c.length - 1; i++) {
+          if (c[i + 1] > 0) { t = i + (-c[i]) / (c[i + 1] - c[i]); break; }
+        }
+      }
+
+      st.t = t;
+      st.from = Math.floor(t);
+      st.to = Math.min(st.from + 1, works.length - 1);
+      st.p = ease(t - st.from);
+      mark(st.p < 0.5 ? st.from : st.to);
+
+      // Видео-телефон проявляется, пока мокап встаёт ребром, и растворяется
+      // на выходе. Ролик каждый раз начинается с начала — с лицевой стороны.
+      var now = performance.now(), any = 0;
+      // Оба соседних кейса с видео — мокап между ними не нужен, ролики
+      // просто перетекают один в другой.
+      var both = st.from !== st.to && spinOf(st.from) && spinOf(st.to);
+      spins.forEach(function (s) {
+        if (inView && Math.abs(t - s.at) < 1.5) loadSpin(s);   // качаем, когда ролик близко
+        var vis = both
+          ? (s.at === st.from ? 1 - st.p : s.at === st.to ? st.p : 0)
+          : clamp((0.5 - Math.abs(t - s.at)) / 0.22, 0, 1);
+        if (vis > 0 && !s.vis) s.start = now;
+        s.vis = vis;
+        s.el.style.opacity = vis.toFixed(3);
+        any = Math.max(any, vis);
+      });
+      // между двумя видео мокап не показываем вовсе, иначе он просвечивает посередине
+      dev.style.opacity = both ? "0" : (1 - any).toFixed(3);
+
+      // Свой экран мокапу на видео-кейсе не нужен: пока он растворяется,
+      // пусть показывает ближайший кейс без видео, а не мелькает чужой картинкой.
+      var idx = st.p < 0.5 ? st.from : st.to;
+      for (var d = 1; spinOf(idx) && d < works.length; d++) {
+        var near = t < idx ? idx - d : idx + d, far = t < idx ? idx + d : idx - d;
+        if (near >= 0 && near < works.length && !spinOf(near)) idx = near;
+        else if (far >= 0 && far < works.length && !spinOf(far)) idx = far;
+      }
+      show(idx);
+
+      if (reduce) { spins.forEach(function (s) { if (s.vis > 0) drawSpin(s, 0, 0, 0); }); return; }
+      render(now);
+    };
+
+    // Каждый кадр: поворот от прокрутки плюс то, что телефон делает сам,
+    // пока читаешь кейс, — мокап плавно покачивается, видео идёт по кругу.
+    var render = function (now) {
+      if (!st.on) return;
+      var p = st.p, from = st.from, to = st.to;
+
+      // Видео крутится по кругу в одну сторону, без пауз. Ролик кончается
+      // другим экраном, чем начинается, поэтому последние SPIN_SEAM кадров
+      // плавно перетекают в первые — стыка не видно.
+      spins.forEach(function (s) {
+        if (!s.vis || !s.frames.length) return;
+        var n = s.frames.length;
+        var seam = Math.min(SPIN_SEAM, Math.floor(n / 3));
+        var len = n - seam;                                   // длина одного круга
+        var pos = ((now - s.start) / 1000 * SPIN_FPS * SPIN_SPEED + seam) % len;   // старт сразу после стыка — с первого экрана
+        var i = Math.floor(pos);
+        if (i < seam) drawSpin(s, len + i, i, pos / seam);   // хвост уходит, начало проявляется
+        else drawSpin(s, i, 0, 0);
+      });
+
+      // 0 → 90° (ребро, смена экрана) → с −90° обратно к 0
+      var turn = p < 0.5 ? p * 180 : (p - 1) * 180;
+      // Покачивание в духе видео; во время поворота затихает, чтобы не спорить с ним.
+      var calm = 1 - Math.abs(turn) / 90;
+      var w = now / 1000 * (2 * Math.PI / SWAY_PERIOD);
+      var swayY = Math.sin(w) * 9 * calm;
+      var swayX = Math.sin(w * 0.5 + 1) * 2.5 * calm;
+      var lift = Math.sin(w + 0.8) * 6 * calm;
+
+      var side = land[from] + (land[to] - land[from]) * p;    // 0 стоя, 1 лёжа
+      // Лёжа телефон шире колонки: уменьшаем так, чтобы влез по ширине.
+      var fit = Math.min(1, (stage.clientWidth + 80) / dev.offsetHeight);
+      var scale = 1 + (fit - 1) * side;
+      dev.style.transform =
+        "translateY(" + lift.toFixed(2) + "px) " +
+        "rotateZ(" + (-90 * side).toFixed(2) + "deg) " +
+        "rotateY(" + (turn + swayY).toFixed(2) + "deg) " +
+        "rotateX(" + swayX.toFixed(2) + "deg) " +
+        "scale(" + scale.toFixed(3) + ")";
+      // Боком к зрителю телефон темнеет — так поворот читается объёмным.
+      dev.style.filter = "drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(" +
+        (1 - 0.45 * Math.abs(Math.sin((turn + swayY) * Math.PI / 180))).toFixed(3) + ")";
+      // Блик идёт за поворотом, а в покое чуть гуляет вместе с покачиванием.
+      screen.style.setProperty("--glare", clamp((p * 2) - 1 + swayY / 40, -1, 1).toFixed(3));
+    };
+
+    var request = function () {
+      if (tick) return;
+      tick = true;
+      requestAnimationFrame(measure);
+    };
+
+    // Цикл кадров крутится, только пока колонка с телефоном на экране и
+    // вкладка открыта. При просьбе уменьшить движение цикла нет вовсе.
+    var raf = 0, inView = false;
+    var loop = function (now) { render(now); raf = requestAnimationFrame(loop); };
+    var run = function () {
+      var want = !reduce && inView && !document.hidden;
+      if (want && !raf) raf = requestAnimationFrame(loop);
+      if (!want && raf) { cancelAnimationFrame(raf); raf = 0; }
+    };
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) { inView = e[0].isIntersecting; run(); request(); }).observe(stage);
+    } else {
+      inView = true;
+    }
+    document.addEventListener("visibilitychange", run);
+    window.addEventListener("scroll", request, { passive: true });
+    window.addEventListener("resize", request, { passive: true });
+    measure();
+    run();
+  };
+
   /* --- Старт -------------------------------------------------------------
      Каждый блок отдельно: если один споткнётся, остальные всё равно
      отработают, а страница не останется наполовину собранной. */
-  [fill, menu, header, particles, reveal].forEach(function (step) {
+  [fill, menu, header, particles, reveal, showcase].forEach(function (step) {
     try { step(); } catch (e) { console.error(e); }
   });
 })();
