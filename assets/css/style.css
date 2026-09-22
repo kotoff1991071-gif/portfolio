@@ -338,8 +338,12 @@ button{font:inherit;color:inherit}
     position:absolute;left:50%;top:calc(var(--h) / 2);
     height:calc(var(--h) / var(--fill,.70));width:auto;aspect-ratio:640/1280;
     transform:translate(-50%,-50%);opacity:0;pointer-events:none;
-    -webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
-    mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
+    /* Края кадра серые, растворяем их. Маска — мягкое затухание по краям,
+       а не круг: круг съедал бы верх и низ телефона на высоких кадрах. */
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent),linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent),linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+    mask-composite:intersect;
   }
 
   .stage__cap{display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--text-3);text-align:center;max-width:320px}
