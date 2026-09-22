@@ -13,6 +13,8 @@ function load() {
   try { return Object.assign(base, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) { return base; }
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// Веб-демо: герой всегда тот, под кого записана озвучка
+if (CONFIG.DEMO_PROFILE) S.profile = Object.assign({}, CONFIG.DEMO_PROFILE);
 
 // ---------- текст с именем и родом ----------
 // Любимая игрушка: формы слова для сказок (им., вин., твор., дат.) и род
@@ -73,38 +75,79 @@ const Voice = (() => {
   // Нет интернета или ошибка сервера — читаем голосом телефона
   window.onAudioError = id => { const fb = fallbacks[id]; delete fallbacks[id]; delete cbs[id]; if (fb) fb(); };
   const remoteOn = () => !!(CONFIG.TTS_URL && window.Android && window.Android.playUrl);
+  // Веб-демо: озвучка Яндекса записана заранее в DEMO_AUDIO, имя файла — по параметрам.
+  // Тот же ключ считает скрипт записи, поменяешь здесь — перезапиши озвучку.
+  const demoOn = () => !!(CONFIG.DEMO_AUDIO && !(window.Android && window.Android.playUrl));
+  const demoKey = p => Object.keys(p).sort().map(k => k + "-" + (k === "l" ? p[k].codePointAt(0) : p[k])).join("_");
+  const demoUrl = p => CONFIG.DEMO_AUDIO + demoKey(p) + ".mp3";
+  let demoAudio = null;
   const ttsUrl = params => {
     const p = S.profile;
     const q = Object.assign({ name: p.name, g: p.g, toy: p.toy, kind: toyOf(p).id, v: CONTENT_VER }, params);
     return CONFIG.TTS_URL + (CONFIG.TTS_URL.includes("?") ? "&" : "?") + new URLSearchParams(q).toString();
   };
   const clean = t => letterNames(t).replace(/\+/g, "").replace(/[«»]/g, "").replace(/—/g, ", ").replace(/\n/g, " ");
+  // Для голоса браузера метку Яндекса «+» перед ударной гласной превращаем в знак
+  // ударения над гласной («светл+о» → «светло́»): голоса Google и Microsoft его учитывают.
+  const cleanLocal = t => clean(t.replace(/\+([аеёиоуыэюяАЕЁИОУЫЭЮЯ])/g, "$1́"));
   const native = () => window.Android && window.Android.isReady && window.Android.isReady();
+  // Голос браузера: выбираем лучший русский, а не первый попавшийся. Первым в списке
+  // на Windows обычно идёт роботизированная «Irina»; нейросетевые голоса
+  // (Edge — Svetlana/Dariya Natural, Chrome — Google, Apple — Milena) звучат куда живее.
+  let voice = null;
+  const pickVoice = () => {
+    if (!("speechSynthesis" in window)) return;
+    const score = v => (/natural|neural|online/i.test(v.name) ? 8 : 0) + (/google/i.test(v.name) ? 5 : 0) +
+      (/svetlana|dariya|milena|alena|yuri/i.test(v.name) ? 3 : 0) + (/irina|pavel/i.test(v.name) ? -3 : 0);
+    const ru = speechSynthesis.getVoices().filter(v => /^ru/i.test(v.lang));
+    voice = ru.sort((a, b) => score(b) - score(a))[0] || null;
+  };
+  if ("speechSynthesis" in window) {
+    pickVoice();
+    // список голосов приходит не сразу — пересчитываем, когда браузер его загрузит
+    speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", pickVoice);
+  }
   return {
     speak(text, rate, onend) {
       const id = "u" + (++seq);
       if (onend) cbs[id] = onend;
       if (native()) { window.Android.speak(clean(text), id, rate || 0.85); return; }
       if ("speechSynthesis" in window) {
-        const u = new SpeechSynthesisUtterance(clean(text));
+        const u = new SpeechSynthesisUtterance(cleanLocal(text));
         u.lang = "ru-RU"; u.rate = rate || 0.85;
-        const v = speechSynthesis.getVoices().find(x => /^ru/i.test(x.lang)); if (v) u.voice = v;
+        if (!voice) pickVoice(); if (voice) u.voice = voice;
         u.onend = () => window.onTtsDone(id);
         speechSynthesis.cancel(); speechSynthesis.speak(u);
       } else if (onend) { setTimeout(() => window.onTtsDone(id), 1500); }
     },
     // Голос Яндекса: params — что озвучить (сказка/абзац или буква), text — запасной текст для голоса телефона
     remote(params, text, rate, onend) {
+      if (demoOn()) {
+        // Веб-демо: готовая запись. Не загрузилась — читаем голосом браузера.
+        const id = "d" + (++seq);
+        cbs[id] = onend || (() => {});
+        fallbacks[id] = () => this.speak(text, rate, onend);
+        if (demoAudio) demoAudio.pause();
+        const a = demoAudio = new Audio(demoUrl(params));
+        a.onended = () => { if (demoAudio === a) window.onTtsDone(id); };
+        a.onerror = () => { if (demoAudio === a) window.onAudioError(id); };
+        a.play().catch(() => { if (demoAudio === a) window.onAudioError(id); });
+        return;
+      }
       if (!remoteOn()) { this.speak(text, rate, onend); return; }
       const id = "a" + (++seq);
       cbs[id] = onend || (() => {});
       fallbacks[id] = () => this.speak(text, rate, onend);
       window.Android.playUrl(ttsUrl(params), id);
     },
-    prefetch(params) { if (remoteOn()) window.Android.prefetch(ttsUrl(params)); },
+    prefetch(params) {
+      if (demoOn()) { fetch(demoUrl(params)).catch(() => {}); return; }   // следующий абзац заранее, без паузы
+      if (remoteOn()) window.Android.prefetch(ttsUrl(params));
+    },
     stop() {
       for (const k in cbs) delete cbs[k];
       for (const k in fallbacks) delete fallbacks[k];
+      if (demoAudio) { demoAudio.pause(); demoAudio = null; }
       if (window.Android && window.Android.stop) window.Android.stop();
       else if ("speechSynthesis" in window) speechSynthesis.cancel();
     }
@@ -318,10 +361,11 @@ const SCREENS = {
       </div>
       ${PAYWALL_ON ? `<button class="plan best"><span><b>На год</b><br><small class="note">≈ 166 ₽ в месяц</small></span><b>1 990 ₽</b></button><button class="plan"><b>На месяц</b><b>299 ₽</b></button><button class="btn primary">Попробовать 7 дней бесплатно</button>` : ""}
       <section style="display:flex;flex-direction:column;gap:8px"><h2 class="h2">Профиль</h2>
-        <div class="card row"><span><b>${esc(S.profile.name)}</b>, ${S.profile.g === "f" ? "девочка" : "мальчик"}<br><small class="note">${toyOf(S.profile).n} ${esc(S.profile.toy)}</small></span><button class="btn soft" data-go="onboarding" data-arg="1">Изменить</button></div>
+        <div class="card row"><span><b>${esc(S.profile.name)}</b>, ${S.profile.g === "f" ? "девочка" : "мальчик"}<br><small class="note">${toyOf(S.profile).n} ${esc(S.profile.toy)}</small></span>${CONFIG.DEMO_PROFILE ? "" : `<button class="btn soft" data-go="onboarding" data-arg="1">Изменить</button>`}</div>
+        ${CONFIG.DEMO_PROFILE ? `<p class="note">Это демо: сказки про Машу и зайчика Бусю. В приложении — с именем вашего ребёнка и его любимой игрушкой.</p>` : ""}
       </section>
       <section style="display:flex;flex-direction:column;gap:8px"><h2 class="h2">Голос</h2>
-        <div class="card">${CONFIG.TTS_URL ? `<b>Голос Яндекса</b><br><small class="note">Каждая сказка скачивается один раз и потом звучит без интернета.${window.Android && window.Android.cacheSizeMb ? " Сохранено: " + window.Android.cacheSizeMb() + " МБ." : ""}</small>` : `<b>Голос телефона</b><br><small class="note">Если звучит неприятно: Настройки телефона → Специальные возможности → Синтез речи → «Синтезатор речи Google», русский язык.</small>`}</div>
+        <div class="card">${CONFIG.DEMO_PROFILE ? `<b>Голос Яндекса</b><br><small class="note">В демо озвучка записана заранее. В приложении каждая сказка скачивается один раз и потом звучит без интернета.</small>` : CONFIG.TTS_URL ? `<b>Голос Яндекса</b><br><small class="note">Каждая сказка скачивается один раз и потом звучит без интернета.${window.Android && window.Android.cacheSizeMb ? " Сохранено: " + window.Android.cacheSizeMb() + " МБ." : ""}</small>` : `<b>Голос телефона</b><br><small class="note">Если звучит неприятно: Настройки телефона → Специальные возможности → Синтез речи → «Синтезатор речи Google», русский язык.</small>`}</div>
       </section>
       <button class="btn ghost sm" data-go="privacy">Политика конфиденциальности</button>
       <p class="note">Деньночка, версия 1.0.1. Сказки помогают, но не заменяют консультацию специалиста, если трудности сохраняются долго.</p>`;

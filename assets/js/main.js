@@ -311,6 +311,8 @@
       var base = frameNear(s, k);
       if (!base) return;
       var w = s.el.width, h = s.el.height;
+      // Кадры уже увеличены заранее, с резкостью; браузер пусть сглаживает бережно
+      s.ctx.imageSmoothingQuality = "high";
       s.ctx.globalAlpha = 1;
       s.ctx.drawImage(base.img, 0, 0, w, h);
       var top = alpha > 0 ? frameNear(s, over) : null;

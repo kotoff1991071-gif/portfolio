@@ -146,10 +146,13 @@ button{font:inherit;color:inherit}
 .btn svg{width:14px;height:14px;flex:none}
 .btn--primary{background:#fff;color:#0A0A0C}
 .btn--ghost{background:transparent;color:var(--text);border-color:var(--line-2)}
+/* Кнопки «Хочу…» — в фирменном градиенте: заметнее белых, но не спорят с ними */
+.btn--grad{background:linear-gradient(96deg,var(--accent-a),var(--accent-b));color:#0A0A0C}
 .btn--sm{padding:11px 18px;font-size:14px}
 @media (hover:hover){
   .btn--primary:hover{transform:translateY(-2px);background:#f0f0f0}
   .btn--ghost:hover{transform:translateY(-2px);border-color:#fff;background:var(--surface-2)}
+  .btn--grad:hover{transform:translateY(-2px);filter:brightness(1.08)}
 }
 
 /* --- Шапка -------------------------------------------------------------- */
@@ -173,7 +176,6 @@ button{font:inherit;color:inherit}
   color:var(--text-2);transition:color .2s var(--ease);
 }
 .nav a:hover{color:var(--text)}
-.hdr .btn{display:none}
 .burger{
   display:inline-flex;flex-direction:column;justify-content:center;gap:5px;position:relative;z-index:45;
   width:44px;height:44px;padding:0 11px;background:none;border:0;cursor:pointer;
@@ -184,7 +186,6 @@ button{font:inherit;color:inherit}
 .burger[aria-expanded="true"] i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 @media (min-width:900px){
   .nav{display:flex}
-  .hdr .btn{display:inline-flex}
   .burger{display:none}
 }
 /* Меню на телефоне */
@@ -206,20 +207,8 @@ button{font:inherit;color:inherit}
 .hero h1{font-size:clamp(40px,8.4vw,86px);margin-bottom:22px}
 .hero h1 .l2{display:block}
 .hero__lead{color:var(--text-2);font-size:clamp(16px,1.6vw,19px);max-width:46ch;margin-bottom:30px}
-.hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:clamp(36px,5vw,52px)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px}
 
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stats li:last-child{grid-column:1/-1}   /* третья плитка на телефоне занимает всю ширину */
-.stat{
-  padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-md);
-  background:var(--surface);
-}
-@media (min-width:560px){
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .stats li:last-child{grid-column:auto}
-}
-.stat b{display:block;font-family:var(--body);font-weight:800;font-size:clamp(28px,3.6vw,38px);line-height:1;letter-spacing:-.02em}
-.stat span{display:block;margin-top:8px;font-size:13px;line-height:1.4;color:var(--text-2)}
 
 /* Портрет на первом экране. У фото белый фон, поэтому не растворяем его
    в тёмной странице, а подаём карточкой со скруглёнными углами. За ней —
@@ -243,7 +232,13 @@ button{font:inherit;color:inherit}
 /* --- Секции ------------------------------------------------------------- */
 .sec{padding:clamp(56px,8vw,104px) 0;scroll-margin-top:76px}
 .sec__head{margin-bottom:clamp(28px,4vw,44px)}
-.sec__head h2{font-size:clamp(28px,4.6vw,50px);margin-top:14px}
+/* Название раздела («О себе», «Работы»…) — главный заголовок, крупно.
+   Фраза под ним — второй уровень: меньше названия, но крупнее текста. */
+.sec__head .eyebrow,.bots__text .eyebrow,.cta .eyebrow{
+  font:800 clamp(34px,5.6vw,64px)/1.04 var(--display);letter-spacing:-.02em;
+  text-transform:none;color:var(--text);
+}
+.sec__head h2{font-size:clamp(20px,2.6vw,30px);line-height:1.18;margin-top:16px}
 .sec__head p{margin-top:16px;color:var(--text-2);max-width:54ch}
 
 /* «живые» — единственное слово на сайте, которое шевелится само.
@@ -341,7 +336,7 @@ button{font:inherit;color:inherit}
      Края кадра серые, а не цвета сайта, поэтому растворяем их маской. */
   .spin{
     position:absolute;left:50%;top:calc(var(--h) / 2);
-    height:calc(var(--h) / var(--fill,.70));width:auto;aspect-ratio:320/640;
+    height:calc(var(--h) / var(--fill,.70));width:auto;aspect-ratio:640/1280;
     transform:translate(-50%,-50%);opacity:0;pointer-events:none;
     -webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
     mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);
@@ -355,7 +350,7 @@ button{font:inherit;color:inherit}
    Слева текст и список умений, справа «картинка» — переписка с ботом,
    свёрстанная обычным HTML: весит ноль и не мылится ни на каком экране. */
 .bots{display:grid;gap:clamp(36px,5vw,64px);align-items:center}
-.bots h2{font-size:clamp(28px,4.6vw,50px);margin-top:14px}
+.bots h2{font-size:clamp(20px,2.6vw,30px);line-height:1.18;margin-top:16px}
 .bots__lead{margin-top:16px;color:var(--text-2);font-size:clamp(16px,1.6vw,18px);max-width:52ch}
 .bots__list{display:grid;gap:12px;margin:28px 0 30px}
 .bots__list li{
@@ -371,7 +366,8 @@ button{font:inherit;color:inherit}
   content:"";position:absolute;left:21px;top:21px;width:6px;height:4px;
   border:solid #0A0A0C;border-width:0 0 2px 2px;transform:rotate(-45deg);
 }
-.bots__list b{display:block;margin-bottom:3px;color:var(--text);font-family:var(--display);font-weight:700;font-size:15px}
+/* Заголовок умения всегда в две строки — карточки в сетке выглядят одинаково */
+.bots__list b{display:block;margin-bottom:6px;color:var(--text);font-family:var(--display);font-weight:700;font-size:15px;line-height:1.25;min-height:2.5em}
 .bots__foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
 .bots__note{font-size:13px;color:var(--text-3);max-width:40ch}
 @media (min-width:640px){.bots__list{grid-template-columns:1fr 1fr}}
@@ -434,7 +430,12 @@ button{font:inherit;color:inherit}
 }
 .srv__price b{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.2vw,22px)}
 .srv__price span{font-size:13px;color:var(--text-3);text-align:right}
-@media (min-width:820px){.services{grid-template-columns:1fr 1fr}}
+@media (min-width:820px){
+  .services{grid-template-columns:1fr 1fr}
+  /* нечётная последняя карточка занимает ряд целиком, а не половину */
+  .srv:last-child:nth-child(odd){grid-column:1/-1}
+  .srv:last-child:nth-child(odd) .srv__list{grid-template-columns:1fr 1fr}
+}
 
 /* Дополнение к пакетам — одна строка под сеткой, пунктирная рамка
    показывает, что это не пятый пакет, а надстройка к любому. */
@@ -467,7 +468,8 @@ button{font:inherit;color:inherit}
   background:linear-gradient(96deg,var(--accent-a),var(--accent-b));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.step b{display:block;margin-bottom:6px;color:var(--text);font-family:var(--display);font-weight:700;font-size:16px}
+/* Заголовок шага всегда в две строки — карточки в ряду выглядят одинаково */
+.step b{display:block;min-height:2.4em;line-height:1.2;margin-bottom:6px;color:var(--text);font-family:var(--display);font-weight:700;font-size:16px}
 @media (min-width:1024px){
   .steps{grid-template-columns:repeat(5,1fr);gap:12px}
   .step{padding:24px 20px}
@@ -500,18 +502,17 @@ button{font:inherit;color:inherit}
   background:radial-gradient(circle,rgba(255,77,141,.28),rgba(255,77,141,0) 70%);
 }
 .cta>*{position:relative}
-.cta h2{font-size:clamp(26px,4.2vw,44px);margin-bottom:18px}
+.cta h2{font-size:clamp(20px,2.6vw,30px);line-height:1.18;margin:16px 0 18px}
 .cta p{color:var(--text-2);max-width:48ch;margin-bottom:28px}
-.cta__row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.cta__row .tg{font-size:14px;color:var(--text-3)}
+.cta__ways{color:var(--text-2);font-size:15px}
 
 /* Карточки со всеми способами связи: две колонки на планшете, четыре на
    широком экране. Длинная почта переносится, а не распирает карточку. */
-.contacts{display:grid;gap:10px;margin-top:28px}
+.contacts{display:grid;gap:10px;margin-top:16px}
 .contact{
   display:flex;align-items:center;gap:14px;height:100%;
-  padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-md);
-  background:rgba(255,255,255,.03);
+  padding:14px 16px;border:1px solid var(--line-2);border-radius:var(--r-md);
+  background:var(--surface-2);
   transition:border-color .25s var(--ease),background-color .25s var(--ease);
 }
 a.contact:hover{border-color:var(--line-2);background:var(--surface-2)}

@@ -2,7 +2,16 @@
 // TTS_URL — адрес функции озвучки в Яндекс Облаке (см. YANDEX_SETUP.md).
 //           Пусто — сказки читает встроенный голос телефона.
 // PRIVACY_URL — ссылка на политику конфиденциальности (должна открываться у всех).
+//
+// Только для веб-демо на сайте-портфолио:
+// DEMO_AUDIO   — папка с заранее записанной озвучкой Яндекса. Демо играет эти
+//                файлы и никогда не обращается к функции озвучки, так что
+//                посетители ничего не расходуют с аккаунта.
+// DEMO_PROFILE — герой демо. Озвучка записана под него, поэтому поменять
+//                имя в демо нельзя (текст и голос разошлись бы).
 const CONFIG = {
   TTS_URL: "https://functions.yandexcloud.net/d4e3qm546p3ve0favrtr",
-  PRIVACY_URL: "https://claude.ai/artifact/AowK3NVN7yj5hM4Fcg8UwL"
+  PRIVACY_URL: "https://claude.ai/artifact/AowK3NVN7yj5hM4Fcg8UwL",
+  DEMO_AUDIO: "audio/",
+  DEMO_PROFILE: { name: "Маша", g: "f", toy: "Буся", toyKind: "bunny" }
 };
