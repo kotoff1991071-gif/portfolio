@@ -459,38 +459,6 @@ button{font:inherit;color:inherit}
   .step::before{position:static;display:block;margin-bottom:18px;font-size:28px}
 }
 
-/* --- Отзывы -------------------------------------------------------------
-   Три колонки на широком экране, одна на телефоне. Карточек может быть
-   меньше — сетка перестроится сама. Большая кавычка — декор в цветах сайта. */
-.reviews{display:grid;gap:18px}
-.review{
-  position:relative;display:flex;flex-direction:column;margin:0;
-  padding:clamp(24px,3vw,32px);padding-top:clamp(52px,5vw,60px);
-  border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);
-  transition:border-color .3s var(--ease),background-color .3s var(--ease);
-}
-@media (hover:hover){.review:hover{border-color:var(--line-2);background:var(--surface-2)}}
-.review::before{
-  content:"“";position:absolute;left:clamp(22px,3vw,30px);top:6px;
-  font:800 72px/1 var(--display);
-  background:linear-gradient(96deg,var(--accent-a),var(--accent-b));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.review blockquote{margin:0 0 24px;color:var(--text);font-size:15px;line-height:1.6}
-.review figcaption{display:flex;align-items:center;gap:12px;margin-top:auto}
-.review__ava{
-  display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
-  color:#0A0A0C;font:800 15px/1 var(--display);
-}
-.review figcaption b{display:block;font-size:15px}
-.review figcaption small{display:block;font-size:13px;color:var(--text-3)}
-.review__tag{
-  margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
-  font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);
-}
-@media (min-width:900px){.reviews{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}}
-
 /* --- О себе ------------------------------------------------------------- */
 .about{display:grid;gap:clamp(28px,4vw,48px)}
 .about__text{color:var(--text-2);font-size:clamp(16px,1.6vw,18px)}

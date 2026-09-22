@@ -18,7 +18,8 @@ window.CONTENT = {
     tagline:   "Делаю сайты и мобильные приложения для малого бизнеса. От лендинга до приложения в RuStore.",
     tgUrl:     "https://t.me/Mike71911",
     tgLabel:   "@Mike71911",
-    maxLabel:  "+7 926 018-09-03",            // MAX — по номеру телефона. Появится ссылка на профиль — добавь maxUrl
+    maxUrl:    "https://max.ru/u/f9LHodD0cOKU6IZthvDQTPLL0rD-YsFFYSlLPU4-jynTu9EXJVD-XpYM908",
+    maxLabel:  "Открыть чат",
     phone:     "+7 926 018-09-03",
     phoneUrl:  "tel:+79260180903",
     email:     "mihail.kotov.91@mail.ru",
