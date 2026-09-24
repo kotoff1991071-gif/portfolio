@@ -552,6 +552,9 @@ a.contact:hover{border-color:var(--line-2);background:var(--surface-2)}
 .ftr{padding:30px 0 40px;border-top:1px solid var(--line);margin-top:clamp(40px,6vw,80px)}
 .ftr__in{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;
   font-size:13px;color:var(--text-3)}
+/* Ссылка на политику: подчёркнутая, иначе в подвале её не видно */
+.ftr__in a{text-decoration:underline;text-underline-offset:3px;color:var(--text-2)}
+@media (hover:hover){.ftr__in a:hover{color:var(--text)}}
 
 /* ==========================================================================
    Движение. Пока — фон, ховеры и задел под появление секций
