@@ -13,7 +13,7 @@
 //                Остальное показывается закрытым. Убери ключ — откроется всё.
 const CONFIG = {
   TTS_URL: "https://functions.yandexcloud.net/d4e3qm546p3ve0favrtr",
-  PRIVACY_URL: "https://claude.ai/artifact/AowK3NVN7yj5hM4Fcg8UwL",
+  PRIVACY_URL: "https://mkotov.ru/dennochka/privacy.html",
   DEMO_AUDIO: "audio/",
   DEMO_PROFILE: { name: "Маша", g: "f", toy: "Буся", toyKind: "bunny" },
   DEMO_OPEN:    { letters: ["М", "А", "Ш"], stories: [0, 1, 3] }
