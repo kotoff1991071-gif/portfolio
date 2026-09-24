@@ -387,7 +387,7 @@ button{font:inherit;color:inherit}
 /* Заголовок умения всегда в две строки — карточки в сетке выглядят одинаково */
 .bots__list b{display:block;margin-bottom:6px;color:var(--text);font-family:var(--display);font-weight:700;font-size:15px;line-height:1.25;min-height:2.5em}
 .bots__foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.bots__price{display:grid;gap:6px;font-size:13px;color:var(--text-3);max-width:44ch}
+.bots__price{display:grid;gap:6px;font-size:13px;color:var(--text-3);min-width:0}
 .bots__price li{position:relative;padding-left:14px}
 .bots__price li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent-b)}
 .bots__price b{color:var(--text);font-weight:700}
