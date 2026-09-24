@@ -44,8 +44,12 @@ function fill(t) {
 }
 const noStress = t => t.replace(/\+/g, "");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const locked = i => PAYWALL_ON && !FREE_STORIES.includes(i);
-const letterLocked = l => PAYWALL_ON && !FREE_LETTERS.includes(l);
+// Веб-демо на сайте: открыты только буквы имени героя и три сказки, остальное
+// показываем закрытым — это витрина, а не бесплатная раздача всего приложения.
+const DEMO_OPEN = CONFIG.DEMO_OPEN || null;
+const locked = i => DEMO_OPEN ? !DEMO_OPEN.stories.includes(+i) : (PAYWALL_ON && !FREE_STORIES.includes(i));
+const letterLocked = l => DEMO_OPEN ? !DEMO_OPEN.letters.includes(l) : (PAYWALL_ON && !FREE_LETTERS.includes(l));
+const andList = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " и " + a[a.length - 1];
 
 // Отдельно стоящие согласные буквы в стихах («буква М», «Щ — как Ш») читаем названием буквы,
 // иначе синтезатор принимает их за сокращения («Ш» → «шоссе»). Предлоги В, С, К не трогаем.
@@ -159,7 +163,7 @@ function tik(size, night) {
   const wing = night ? .5 : .9, body = night ? "#F5D78E" : "#F2B632", head = night ? "#3B3F6B" : "#1F2A44";
   return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><circle cx="32" cy="38" r="24" fill="${body}" opacity=".2"/><ellipse cx="22" cy="24" rx="9" ry="12" fill="#fff" opacity="${wing}" transform="rotate(-25 22 24)"/><ellipse cx="42" cy="24" rx="9" ry="12" fill="#fff" opacity="${wing}" transform="rotate(25 42 24)"/><ellipse cx="32" cy="41" rx="10" ry="13" fill="${body}"/><circle cx="32" cy="26" r="8" fill="${head}"/><circle cx="29" cy="25" r="1.6" fill="#fff"/><circle cx="35" cy="25" r="1.6" fill="#fff"/><path d="M28 18 L25 11 M36 18 L39 11" stroke="${head}" stroke-width="2" stroke-linecap="round"/></svg>`;
 }
-const LOCK = '<svg viewBox="0 0 24 24" aria-label="В подписке"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const LOCK = '<svg viewBox="0 0 24 24" aria-label="Закрыто"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>';
 const PAUSE = '<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg>';
 const BACK = '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>';
@@ -235,8 +239,8 @@ const SCREENS = {
         <div class="namebox">${letters.map(l => `<button data-go="letter" data-arg="${l}" class="${S.learned.includes(l) ? "learned" : ""} ${LETTERS[l] ? "" : "soon"}" aria-label="Буква ${l}">${l}</button>`).join("")}</div>
       </section>
       <section style="display:flex;flex-direction:column;gap:10px">
-        <div class="row"><h2 class="h2">Азбука в стихах</h2><span class="note">готово ${ready.length} из 33</span></div>
-        <div class="grid6">${ABC.map(l => `<button class="lt ${LETTERS[l] ? "ready" : ""} ${S.learned.includes(l) ? "learned" : ""}" data-go="letter" data-arg="${l}" aria-label="Буква ${l}">${l}</button>`).join("")}</div>
+        <div class="row"><h2 class="h2">Азбука в стихах</h2><span class="note">${DEMO_OPEN ? "в демо " + DEMO_OPEN.letters.length + " из 33" : "готово " + ready.length + " из 33"}</span></div>
+        <div class="grid6">${ABC.map(l => `<button class="lt ${LETTERS[l] && !letterLocked(l) ? "ready" : ""} ${S.learned.includes(l) ? "learned" : ""}" data-go="letter" data-arg="${l}" aria-label="Буква ${l}">${l}</button>`).join("")}</div>
       </section>
       <section class="tiles">
         <button class="tile" data-go="tw"><b>Скорого&shy;ворки</b><span>для речи</span></button>
@@ -252,7 +256,9 @@ const SCREENS = {
     const next = ABC.slice(idx + 1).find(x => LETTERS[x]);
     const top = `<div class="row"><button class="icon-btn" id="back" aria-label="Назад">${BACK}</button><span class="eyebrow">Буква ${idx + 1} из 33</span><span style="width:44px"></span></div>`;
     if (!d) return top + `<div class="letter-card"><div class="big">${l}<small>${l.toLowerCase()}</small></div><p class="poem" style="font-size:19px">Стишок про эту букву Тик ещё сочиняет. Она появится в обновлении!</p></div>`;
-    if (letterLocked(l)) return top + `<div class="letter-card"><div class="big">${l}</div><p>Эта буква — в подписке.</p><button class="btn sun" data-go="parents">Подробнее</button></div>`;
+    if (letterLocked(l)) return top + `<div class="letter-card"><div class="big">${l}</div>${DEMO_OPEN
+      ? `<p>В демо открыты буквы имени: ${andList(DEMO_OPEN.letters)}. В приложении — все 33: картинка, стишок и звук буквы.</p><button class="btn sun" data-go="day">К азбуке</button>`
+      : `<p>Эта буква — в подписке.</p><button class="btn sun" data-go="parents">Подробнее</button>`}</div>`;
     return top + `
       <div class="letter-card">
         <div class="row" style="align-items:center"><div class="big">${l}<small>${l.toLowerCase()}</small></div><div class="pic">${PIC[d.pic]}${d.word}</div></div>
@@ -269,14 +275,16 @@ const SCREENS = {
     return `
       <div class="row"><div><div class="eyebrow">Ночью — сказки</div><h1 class="h1">Добрый вечер, ${esc(S.profile.name)}</h1></div></div>
       ${last ? `<button class="continue" data-go="player" data-arg="${S.last.i}">${tik(60, true)}<span style="display:flex;flex-direction:column;gap:2px"><span class="eyebrow" style="color:var(--sun)">Продолжить</span><span style="font:20px/1.2 var(--display)">${esc(fill(last.title))}</span></span></button>` : ""}
-      <div class="row"><h2 class="h2">С чем помочь сегодня?</h2>${PAYWALL_ON ? `<button class="note" data-go="parents" style="border:0;background:none;color:var(--sun);font-weight:800">3 из ${STORIES.length} бесплатно</button>` : ""}</div>
+      <div class="row"><h2 class="h2">С чем помочь сегодня?</h2>${DEMO_OPEN ? `<span class="note">в демо ${DEMO_OPEN.stories.length} из ${STORIES.length}</span>` : PAYWALL_ON ? `<button class="note" data-go="parents" style="border:0;background:none;color:var(--sun);font-weight:800">3 из ${STORIES.length} бесплатно</button>` : ""}</div>
       <div class="sits">${STORIES.map((s, i) => `<button class="sit" data-go="player" data-arg="${i}"><span>${esc(s.chip)}</span>${locked(i) ? LOCK : ""}</button>`).join("")}</div>
-      <p class="note">Новые сказки будут появляться с обновлениями.</p>`;
+      <p class="note">${DEMO_OPEN ? "Остальные сказки открыты в самом приложении." : "Новые сказки будут появляться с обновлениями."}</p>`;
   },
 
   player(i) {
     i = +i; const s = STORIES[i];
-    if (locked(i)) return `<div class="player-top"><button class="icon-btn" id="back" aria-label="Назад">${BACK}</button></div><div class="tik-big">${tik(150, true)}</div><h1 class="story-title">${esc(fill(s.title))}</h1><p style="text-align:center">Эта сказка — в подписке.</p><button class="btn sun" data-go="parents">Подробнее</button>`;
+    if (locked(i)) return `<div class="player-top"><button class="icon-btn" id="back" aria-label="Назад">${BACK}</button></div><div class="tik-big">${tik(150, true)}</div><h1 class="story-title">${esc(fill(s.title))}</h1>${DEMO_OPEN
+      ? `<p style="text-align:center">В демо открыты три сказки. В приложении их ${STORIES.length}, и в каждой герой — ваш ребёнок: своё имя, пол и любимая игрушка.</p><button class="btn sun" data-go="night">Выбрать другую</button>`
+      : `<p style="text-align:center">Эта сказка — в подписке.</p><button class="btn sun" data-go="parents">Подробнее</button>`}`;
     return `
       <div class="player-top"><button class="icon-btn" id="back" aria-label="Назад">${BACK}</button><span class="eyebrow">${esc(s.chip)}</span><button class="round" id="timer" aria-label="Таймер сна">${timerLabel()}</button></div>
       <div class="tik-big" id="tikbig">${tik(150, true)}</div>
