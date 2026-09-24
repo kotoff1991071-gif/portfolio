@@ -2,3 +2,6 @@
 Thumbs.db
 .vscode/
 node_modules/
+
+# доступы к облаку: только на этом компьютере
+.env.deploy

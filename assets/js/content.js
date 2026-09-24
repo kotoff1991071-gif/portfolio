@@ -25,7 +25,7 @@ window.CONTENT = {
     email:     "mihail.kotov.91@mail.ru",
     emailUrl:  "mailto:mihail.kotov.91@mail.ru",
     city:      "Работаю удалённо",
-    siteUrl:   "https://username.github.io/"  // TODO: адрес сайта, когда появится домен
+    siteUrl:   "https://mkotov.ru/"
   },
 
   /* Цены и сроки — стартовые, ниже рынка (на сайте это не проговаривается).
