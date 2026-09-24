@@ -38,16 +38,26 @@ function fromFile() {
   }
   return out;
 }
+// Файл главнее переменных окружения: в нём значения видно глазами и легко
+// поправить, а забытая переменная из прошлого опыта не подменит их молча.
 const CFG = fromFile();
-const BUCKET = process.env.YC_BUCKET || CFG.YC_BUCKET;
-const KEY_ID = process.env.YC_KEY_ID || CFG.YC_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
-const SECRET = process.env.YC_KEY_SECRET || CFG.YC_KEY_SECRET || process.env.AWS_SECRET_ACCESS_KEY;
+const BUCKET = CFG.YC_BUCKET || process.env.YC_BUCKET;
+const KEY_ID = CFG.YC_KEY_ID || process.env.YC_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
+const SECRET = CFG.YC_KEY_SECRET || process.env.YC_KEY_SECRET || process.env.AWS_SECRET_ACCESS_KEY;
 const flag = f => process.argv.includes(f);
 const DRY = flag("--dry");
 
 if (!BUCKET || !KEY_ID || !SECRET) {
-  console.error("Нет доступов. Нужны переменные YC_BUCKET, YC_KEY_ID, YC_KEY_SECRET — см. комментарий в начале файла.");
+  console.error("Нет доступов. Заполните .env.deploy в корне проекта — см. комментарий в начале этого файла.");
   process.exit(1);
+}
+// Ключ Яндекса — только латиница, цифры и знаки. Кириллица значит, что
+// в поле осталась подсказка вроде «сюда_идентификатор».
+for (const [name, v] of [["YC_BUCKET", BUCKET], ["YC_KEY_ID", KEY_ID], ["YC_KEY_SECRET", SECRET]]) {
+  if (!/^[\x21-\x7e]+$/.test(v)) {
+    console.error(`В ${name} попал текст, которого там быть не может: «${v}». Проверьте .env.deploy.`);
+    process.exit(1);
+  }
 }
 
 /* ---------- что выкладываем ---------- */
@@ -142,7 +152,8 @@ async function listRemote() {
     // в подписи параметры должны идти по алфавиту
     const query = q.split("&").sort().join("&");
     const { body } = await request({ method: "GET", query });
-    for (const m of body.matchAll(/<Key>([^<]+)<\/Key>[\s\S]*?<ETag>(?:&quot;|")([^&"]+)/g)) out.set(m[1], m[2]);
+    // Кавычки вокруг контрольной суммы Яндекс отдаёт как &#34;, другие S3 — как &quot; или как есть.
+    for (const m of body.matchAll(/<Key>([^<]+)<\/Key>[\s\S]*?<ETag>(?:&quot;|&#34;|")([^&"<]+)/g)) out.set(m[1], m[2]);
     token = (body.match(/<NextContinuationToken>([^<]+)</) || [])[1] || "";
   } while (token);
   return out;
